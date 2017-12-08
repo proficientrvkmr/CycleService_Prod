@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+
+		<property name="connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+		<property name="c3p0.idle_test_period">14400</property>
+		<property name="c3p0.preferredTestQuery">select 1;</property>
+
+		<property name="hbm2ddl.auto">update</property>
+
+
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/cycleservice</property>
+		<property name="hibernate.connection.username">root</property>
+
+<!-- 		<property name="hibernate.connection.password">root</property> -->
+		<property name="hibernate.connection.password">xoxo23</property>
+		<property name="hibernate.connection.pool_size">1500</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect </property>
+		<property name="javax.persistence.validation.mode">none</property>
+		<property name="hibernate.current_session_context_class">thread</property>
+
+
+		<mapping class="com.app.domain.BikeDetail" />
+		<mapping class="com.app.domain.BikeServicingDetail" />
+		<mapping class="com.app.domain.EmailOTPTracking" />
+		<mapping class="com.app.domain.MobileOTPTracking" />
+		<mapping class="com.app.domain.RideDetail" />
+		<mapping class="com.app.domain.StoreMaster" />
+		<mapping class="com.app.domain.UserDetail" />
+		<mapping class="com.app.domain.WalletDetail" />
+
+	</session-factory>
+</hibernate-configuration>
