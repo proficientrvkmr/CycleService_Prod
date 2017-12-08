@@ -9,8 +9,8 @@ import com.app.util.RestResponse;
 
 public class RideService {
 
-	public Response getRidePriceBetweenStation(int distance) {
-		double rate = 6.75; // Rs per Km
+	public Response getRidePriceBetweenStation(double distance) {
+		double rate = 6.75;
 		double totalCost = distance * rate;
 		JSONObject object = new JSONObject();
 		try {
@@ -24,7 +24,7 @@ public class RideService {
 	public Response sendMsg(String msg) {
 		JSONObject object = new JSONObject();
 		try {
-			object.put("message", "Very Nice Line: " + msg);
+			object.put("message", "Very Nice Line, " + msg);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
