@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -27,8 +26,8 @@ public class RideDetail implements Serializable {
 	private long id;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "bikeDetail", nullable = false)
-	private BikeDetail bikeDetail;
+	@JoinColumn(name = "bikeDetailId", nullable = false)
+	private long bikeDetailId;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "rideStartPointStationId", nullable = false)
@@ -43,17 +42,13 @@ public class RideDetail implements Serializable {
 	private UserDetail userDetail;
 	
 	private String currentStatus;
-	
-	private float distanceTravel;
-	
-	@Transient
-	private Date timeTravel;
-	
+	private double distanceTravel;
+	private long timeTravel;
 	private Date rideStartTime;
-	
 	private Date rideEndTime;
+	private double totalFare;
 
-
+	
 	public long getId() {
 		return id;
 	}
@@ -62,12 +57,12 @@ public class RideDetail implements Serializable {
 		this.id = id;
 	}
 
-	public BikeDetail getBikeDetail() {
-		return bikeDetail;
+	public long getBikeDetailId() {
+		return bikeDetailId;
 	}
 
-	public void setBikeDetail(BikeDetail bikeDetail) {
-		this.bikeDetail = bikeDetail;
+	public void setBikeDetailId(long bikeDetailId) {
+		this.bikeDetailId = bikeDetailId;
 	}
 
 	public StoreMaster getRideStartPointStationId() {
@@ -78,12 +73,12 @@ public class RideDetail implements Serializable {
 		this.rideStartPointStationId = rideStartPointStationId;
 	}
 
-	public StoreMaster getRideEndPointPointStationId() {
+	public StoreMaster getRideEndPointStationId() {
 		return rideEndPointStationId;
 	}
 
-	public void setRideEndPointPointStationId(StoreMaster rideEndPointPointStationId) {
-		this.rideEndPointStationId = rideEndPointPointStationId;
+	public void setRideEndPointStationId(StoreMaster rideEndPointStationId) {
+		this.rideEndPointStationId = rideEndPointStationId;
 	}
 
 	public String getCurrentStatus() {
@@ -94,19 +89,19 @@ public class RideDetail implements Serializable {
 		this.currentStatus = currentStatus;
 	}
 
-	public float getDistanceTravel() {
+	public double getDistanceTravel() {
 		return distanceTravel;
 	}
 
-	public void setDistanceTravel(float distanceTravel) {
+	public void setDistanceTravel(double distanceTravel) {
 		this.distanceTravel = distanceTravel;
 	}
 
-	public Date getTimeTravel() {
+	public long getTimeTravel() {
 		return timeTravel;
 	}
 
-	public void setTimeTravel(Date timeTravel) {
+	public void setTimeTravel(long timeTravel) {
 		this.timeTravel = timeTravel;
 	}
 
@@ -132,6 +127,14 @@ public class RideDetail implements Serializable {
 
 	public void setUserDetail(UserDetail userDetail) {
 		this.userDetail = userDetail;
+	}
+
+	public double getTotalFare() {
+		return totalFare;
+	}
+
+	public void setTotalFare(double totalFare) {
+		this.totalFare = totalFare;
 	}
 
 }

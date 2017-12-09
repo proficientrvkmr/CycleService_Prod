@@ -1,4 +1,4 @@
-package com.app.services;
+package com.app.service;
 
 import javax.ws.rs.core.Response;
 

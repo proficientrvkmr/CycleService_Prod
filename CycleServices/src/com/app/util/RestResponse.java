@@ -51,6 +51,19 @@ public class RestResponse {
 		return Response.ok(body.toString()).build();
 	}
 
+	public static Response withSuccessAndMessageAndData(String message, Object object) {
+		JSONObject body = new JSONObject();
+		try {
+			body.put(STATUS_CODE, Response.Status.OK.getStatusCode());
+			body.put(STATUS, Response.Status.OK);
+			body.put(MESSAGE, message);
+			body.put(DATA, object);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return Response.ok(body.toString()).build();
+	}
+	
 	public static Response withError() {
 		JSONObject body = new JSONObject();
 		try {

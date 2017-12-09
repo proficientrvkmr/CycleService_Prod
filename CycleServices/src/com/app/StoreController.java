@@ -9,7 +9,8 @@ import javax.ws.rs.core.Response;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.app.services.StoreService;
+import com.app.service.StoreService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 @Path("store")
 public class StoreController {
@@ -17,13 +18,21 @@ public class StoreController {
 	private StoreService storeService = new StoreService();
 
 	@POST
-	@Path("/getStoreInfo")
+	@Path("/findAllNearestByMe")
 	@Produces("application/json;charset=UTF-8")
-	public Response getStoreInfo(JSONObject object) throws JSONException {
-		String longitude = object.getString("longitude").toString();
-		String latitude = object.getString("latitude").toString();
-		String distance = object.getString("distance").toString();
-		return storeService.getStoreInfo(longitude, latitude, distance);
+	public Response findAllNearestByMe(JSONObject object) throws JSONException {
+		String latitude = object.getString("my_latitude");
+		String longitude = object.getString("my_longitude");
+		String userId = object.getString("userId");
+		return storeService.findAllNearestByMe(longitude, latitude, userId);
+	}
+	
+	@POST
+	@Path("/findAll")
+	@Produces("application/json;charset=UTF-8")
+	public Response getAllStores(JSONObject object) throws JSONException, JsonProcessingException {
+		String userId = object.getString("userId");
+		return storeService.getAllStores(null, null, userId);
 	}
 
 	@GET

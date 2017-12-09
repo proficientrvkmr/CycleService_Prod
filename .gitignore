@@ -1,0 +1,11 @@
+/CycleServices/build/classes/com/app/*.class
+/CycleServices/build/classes/com/app/config/hibernate/*.class
+/CycleServices/build/classes/com/app/config/hibernate/*.xml
+/CycleServices/build/classes/com/app/config/security/*.class
+/CycleServices/build/classes/com/app/dao/*.class
+/CycleServices/build/classes/com/app/domain/*.class
+/CycleServices/build/classes/com/app/mail/*.class
+/CycleServices/build/classes/com/app/mail/*.properties
+/CycleServices/build/classes/com/app/service/*.class
+/CycleServices/build/classes/com/app/util/*.class
+/CycleServices/build/classes/*.properties

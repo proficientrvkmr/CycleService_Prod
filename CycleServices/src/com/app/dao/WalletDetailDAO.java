@@ -7,9 +7,9 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.app.config.hibernate.HibernateSessionFactory;
 import com.app.domain.UserDetail;
 import com.app.domain.WalletDetail;
-import com.app.util.HibernateSessionFactory;
 
 public class WalletDetailDAO {
 	
@@ -23,9 +23,9 @@ public class WalletDetailDAO {
 			UserDetail user = new UserDetail();
 			user.setId(userId);
 			query.setParameter("user", user);
-			List<WalletDetail> list = query.list();
-			System.out.println(list);
-			availableBalance = list.get(0).getAmountAvailable();
+			List<?> list = query.list();
+			WalletDetail wallet = (WalletDetail) list.get(0);
+			availableBalance = wallet.getAmountAvailable();
 		} catch (RuntimeException e) {
 			logger.error("Data Base error");
 		} catch (Exception e) {

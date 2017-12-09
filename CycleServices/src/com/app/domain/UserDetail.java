@@ -26,7 +26,7 @@ public class UserDetail implements Serializable {
 	private String contactNo;
 	private boolean isActive;
 	private String createdDate;
-	private String modifidDate;
+	private String modifiedDate;
 	private String facebookId;
 	@Transient
 	private String statusCode;
@@ -88,12 +88,12 @@ public class UserDetail implements Serializable {
 		this.createdDate = createdDate;
 	}
 
-	public String getModifidDate() {
-		return modifidDate;
+	public String getModifiedDate() {
+		return modifiedDate;
 	}
 
-	public void setModifidDate(String modifidDate) {
-		this.modifidDate = modifidDate;
+	public void setModifiedDate(String modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 
 	public String getFacebookId() {

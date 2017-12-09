@@ -1,4 +1,4 @@
-package com.app.services;
+package com.app.service;
 
 import javax.ws.rs.core.Response;
 
@@ -7,53 +7,54 @@ import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.app.config.hibernate.HibernateSessionFactory;
 import com.app.dao.UserDetailDao;
 import com.app.domain.EmailOTPTracking;
+import com.app.domain.LoginType;
 import com.app.domain.UserDetail;
 import com.app.mail.SendMail;
 import com.app.util.GenerateOTP;
-import com.app.util.HibernateSessionFactory;
+import com.app.util.RestResponse;
 
 public class LoginService {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
+	private SendMail sendMail = new SendMail();
+	private UserDetailDao userDetailDao = new UserDetailDao();
 
-	public Response test() {		
-    	JSONObject obj = new JSONObject();
-    	try{
-    		SendMail sendMail = new SendMail();
-			String subject="Welcome to Test Cycle Service";
+	public Response testMail() {
+		try {
+			String subject = "Welcome to Test Cycle Service";
 			logger.info("This is for testing purpose. Message will enhance once deployed on public ip. OTP \t");
-			sendMail.transferToMailServer("alok2014mca@gmail.com", subject, "Testing");
-				obj.put("statusCode", 100);
- 
-    	} catch (Exception e) {    		
-    		logger.error("===================**************=================");
-    		logger.error(e.toString());
-    		logger.error("===================**************=================");
-    	}
-    	return Response.ok(obj.toString()).header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Credentials", true).header("Access-Control-Allow-Methods", "GET")
-				.header("Access-Control-Allow-Headers", "Content-Type,Accept,X-Requested-With").build();
+			sendMail.transferToMailServer("**-alok2014mca@gmail.com", subject, "Testing");
+		} catch (Exception e) {
+			logger.error("===================**************=================");
+			logger.error(e.toString());
+			logger.error("===================**************=================");
+			return RestResponse.withErrorAndMessage(e.getMessage());
+		}
+		return RestResponse.withSuccess();
 	}
 
+	/**
+	 * Method used to for user sign up.
+	 * 
+	 * @param email
+	 * @param contactNo
+	 * @return final response
+	 */
 	public Response signupUser(String email, String contactNo) {
 		JSONObject obj = new JSONObject();
-		UserDetailDao userDetailDao = new UserDetailDao();
 		UserDetail contactUserDetail = new UserDetail();
 		try {
 			if (!contactNo.equals("")) {
-				contactUserDetail = userDetailDao.loadUserDetail(contactNo, 2);
-				SendMail sendMail = new SendMail();
+				contactUserDetail = userDetailDao.loadUserDetail(contactNo, LoginType.BY_CONTACTNO);
 				String otp = GenerateOTP.generateOTP();
-
 				EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
 				emailOTPTracking.setEmailId(email);
 				emailOTPTracking.setSentOTP(otp);
 				emailOTPTracking.setIsValidated("0");
-
-				UserDetailDao dao = new UserDetailDao();
-				dao.saveEmailOTP(emailOTPTracking);
+				userDetailDao.saveEmailOTP(emailOTPTracking);
 
 				String subject = "Welcome to Test Cycle Service";
 				String emailMessage = "This is for testing purpose. Message will enhance once deployed on public ip. OTP \t"
@@ -61,7 +62,6 @@ public class LoginService {
 				sendMail.transferToMailServer(email, subject, emailMessage);
 
 				JSONObject obj1 = new JSONObject();
-
 				if (contactUserDetail.getStatusCode().equals("1")) {
 					// New User
 					UserDetail userDetail = new UserDetail();
@@ -88,7 +88,7 @@ public class LoginService {
 				}
 			} else {
 				obj.put("message", "Contact No is mandatory");
-				obj.put("status", "Failed");
+				return RestResponse.withErrorAndData(obj);
 			}
 
 		} catch (Exception e) {
@@ -101,46 +101,38 @@ public class LoginService {
 			logger.error("===================**************=================");
 			logger.error(e.toString());
 			logger.error("===================**************=================");
+			return RestResponse.withErrorAndData(obj);
 		} finally {
 			HibernateSessionFactory.closeSession();
 		}
 
-		return Response.ok(obj.toString()).header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Credentials", true).header("Access-Control-Allow-Methods", "GET")
-				.header("Access-Control-Allow-Headers", "Content-Type,Accept,X-Requested-With").build();
+		return RestResponse.withSuccessAndData(obj);
 	}
 
 	public Response loginUser(String contactNo) {
 		JSONObject obj = new JSONObject();
-		UserDetailDao userDetailDao = new UserDetailDao();
 		UserDetail contactUserDetail = new UserDetail();
 		try {
 			if (!contactNo.equals("")) {
-				contactUserDetail = userDetailDao.loadUserDetail(contactNo, 2);
+				contactUserDetail = userDetailDao.loadUserDetail(contactNo, LoginType.BY_CONTACTNO);
 
 				if (contactUserDetail.getStatusCode().equals("0")) {
 					// old User
 					obj.put("status", "Success");
 					obj.put("message", "Login Successful");
 					JSONObject obj1 = new JSONObject();
-
 					String email = contactUserDetail.getEmailId();
-					SendMail sendMail = new SendMail();
 					String otp = GenerateOTP.generateOTP();
-
 					obj1.put("otp", otp);
 					obj1.put("email", contactUserDetail.getEmailId());
 					obj1.put("mobileNo", contactUserDetail.getContactNo());
-
 					obj.put("object", obj1);
 
 					EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
 					emailOTPTracking.setEmailId(email);
 					emailOTPTracking.setSentOTP(otp);
 					emailOTPTracking.setIsValidated("0");
-
-					UserDetailDao dao = new UserDetailDao();
-					dao.saveEmailOTP(emailOTPTracking);
+					userDetailDao.saveEmailOTP(emailOTPTracking);
 
 					String subject = "Welcome to Test Cycle Service";
 					String emailMessage = "This is for testing purpose. Message will enhance once deployed on public ip. OTP \t"
@@ -148,17 +140,14 @@ public class LoginService {
 					sendMail.transferToMailServer(email, subject, emailMessage);
 
 				} else {
-					obj.put("status", "Fail");
 					obj.put("message", "Not Registered User");
 				}
 			} else {
-				obj.put("status", "Fail");
 				obj.put("message", "Contact No is Mandatory");
 			}
 
 		} catch (Exception e) {
 			try {
-				obj.put("status", "Fail");
 				obj.put("message", "Something went wrong. Contact Administrator");
 			} catch (JSONException e1) {
 				e1.printStackTrace();
@@ -166,23 +155,19 @@ public class LoginService {
 			logger.error("===================**************=================");
 			logger.error(e.toString());
 			logger.error("===================**************=================");
+			return RestResponse.withErrorAndData(obj);
 		} finally {
 			HibernateSessionFactory.closeSession();
 		}
-
-		return Response.ok(obj.toString()).header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Credentials", true).header("Access-Control-Allow-Methods", "GET")
-				.header("Access-Control-Allow-Headers", "Content-Type,Accept,X-Requested-With").build();
+		return RestResponse.withSuccessAndData(obj);
 	}
 
-	public Response loginUserWithFB(String email, String facebookId,
-			String userName, String contactNo) {
+	public Response loginUserWithFB(String email, String facebookId, String userName, String contactNo) {
 		JSONObject obj = new JSONObject();
-		UserDetailDao userDetailDao = new UserDetailDao();
 		UserDetail fbUserDetail = new UserDetail();
 		try {
 			if (!contactNo.equals("")) {
-				fbUserDetail = userDetailDao.loadUserDetail(facebookId, 3);
+				fbUserDetail = userDetailDao.loadUserDetail(facebookId, LoginType.BY_FACEBOOK);
 				String otp = GenerateOTP.generateOTP();
 				if (fbUserDetail.getStatusCode().equals("1")) {
 					// new User
@@ -202,20 +187,17 @@ public class LoginService {
 					obj.put("otp", otp);
 				}
 
-				SendMail sendMail = new SendMail();
 				EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
 				emailOTPTracking.setEmailId(email);
 				emailOTPTracking.setSentOTP(otp);
 				emailOTPTracking.setIsValidated("0");
-				UserDetailDao dao = new UserDetailDao();
-				dao.saveEmailOTP(emailOTPTracking);
-				
+				userDetailDao.saveEmailOTP(emailOTPTracking);
+
 				String subject = "Welcome to Test Cycle Service";
 				String emailMessage = "This is for testing purpose. Message will enhance once deployed on public ip. Validate OTP \t"
 						+ otp;
 				sendMail.transferToMailServer(email, subject, emailMessage);
 			} else {
-				obj.put("status", "fail");
 				obj.put("message", "Contact No. can not be empty");
 			}
 		} catch (Exception e) {
@@ -228,34 +210,31 @@ public class LoginService {
 			logger.error("===================**************=================");
 			logger.error(e.toString());
 			logger.error("===================**************=================");
+			return RestResponse.withErrorAndData(obj);
 		} finally {
 			HibernateSessionFactory.closeSession();
 		}
-		return Response.ok(obj.toString()).header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Credentials", true).header("Access-Control-Allow-Methods", "GET")
-				.header("Access-Control-Allow-Headers", "Content-Type,Accept,X-Requested-With").build();
+		return RestResponse.withSuccessAndData(obj);
 	}
 
 	public Response resendOTP(String contactNo) {
 		JSONObject obj = new JSONObject();
-		UserDetailDao userDetailDao = new UserDetailDao();
 		UserDetail contactUserDetail = new UserDetail();
 		try {
 			logger.info("********************************************");
 			logger.info("################ OTP resend with contactNo " + contactNo + " ########################");
 			logger.info("********************************************");
-			contactUserDetail = userDetailDao.loadUserDetail(contactNo, 2);
+			contactUserDetail = userDetailDao.loadUserDetail(contactNo, LoginType.BY_CONTACTNO);
 			if (!contactUserDetail.getContactNo().equals("")) {
-				SendMail sendMail = new SendMail();
 				String otp = GenerateOTP.generateOTP();
-
 				String email = contactUserDetail.getEmailId();
+
 				EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
 				emailOTPTracking.setEmailId(email);
 				emailOTPTracking.setSentOTP(otp);
 				emailOTPTracking.setIsValidated("0");
-				UserDetailDao dao = new UserDetailDao();
-				dao.saveEmailOTP(emailOTPTracking);
+				userDetailDao.saveEmailOTP(emailOTPTracking);
+
 				String subject = "Welcome to Test Cycle Service";
 				String emailMessage = "This is for testing purpose. Message will enhance once deployed on public ip. Validate OTP \t"
 						+ otp;
@@ -271,13 +250,11 @@ public class LoginService {
 				obj.put("object", obj1);
 
 			} else {
-				obj.put("status", "Fail");
 				obj.put("message", "");
 			}
 
 		} catch (Exception e) {
 			try {
-				obj.put("status", "Fail");
 				obj.put("message", "Something went wrong. Contact Administrator");
 			} catch (JSONException e1) {
 				e1.printStackTrace();
@@ -285,13 +262,13 @@ public class LoginService {
 			logger.error("===================**************=================");
 			logger.error(e.toString());
 			logger.error("===================**************=================");
+			return RestResponse.withErrorAndData(obj);
+
 		} finally {
 			HibernateSessionFactory.closeSession();
 		}
 
-		return Response.ok(obj.toString()).header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Credentials", true).header("Access-Control-Allow-Methods", "GET")
-				.header("Access-Control-Allow-Headers", "Content-Type,Accept,X-Requested-With").build();
+		return RestResponse.withSuccessAndData(obj);
 	}
 
 	public Response validateOTP(String email, String otpString) {
@@ -320,13 +297,17 @@ public class LoginService {
 			logger.error("===================**************=================");
 			logger.error(e.toString());
 			logger.error("===================**************=================");
+			return RestResponse.withErrorAndData(obj);
+
 		} finally {
 			HibernateSessionFactory.closeSession();
 		}
 
-		return Response.ok(obj.toString()).header("Access-Control-Allow-Origin", "*")
-				.header("Access-Control-Allow-Credentials", true).header("Access-Control-Allow-Methods", "GET")
-				.header("Access-Control-Allow-Headers", "Content-Type,Accept,X-Requested-With").build();
+		return RestResponse.withSuccessAndData(obj);
+	}
+
+	public UserDetail getUserById(long userId) {
+		return userDetailDao.loadUserDetail(String.valueOf(userId), LoginType.BY_ID);
 	}
 
 }

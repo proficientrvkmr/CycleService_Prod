@@ -10,7 +10,7 @@ import javax.ws.rs.core.Response;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.app.services.LoginService;
+import com.app.service.LoginService;
 
 @Path("login")
 public class LoginController {
@@ -21,7 +21,7 @@ public class LoginController {
 	@Path("/test")
 	@Produces("application/json;charset=UTF-8")
 	public Response test() {
-		return loginService.test();
+		return loginService.testMail();
 	}
 
 	@POST
