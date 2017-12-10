@@ -30,4 +30,22 @@ public class StoreDetailDAO {
 		}
 		return (List<StoreMaster>) storeList;
 	}
+
+	public StoreMaster getStoreById(long storeId) {
+		StoreMaster store = null;
+		try {
+			Session session = HibernateSessionFactory.currentSession();
+			Query query = session.createQuery("from StoreMaster where id = :storeId");
+			query.setParameter("storeId", storeId);
+			List<?> list = query.list();
+			if(!list.isEmpty()){
+				store = (StoreMaster) list.get(0);
+			}
+		} catch (Exception e) {
+			logger.error(e.toString());
+		} finally {
+			HibernateSessionFactory.closeSession();
+		}
+		return store;
+	}
 }

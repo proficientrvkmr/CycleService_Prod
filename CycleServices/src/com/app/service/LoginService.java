@@ -307,7 +307,7 @@ public class LoginService {
 	}
 
 	public UserDetail getUserById(long userId) {
-		return userDetailDao.loadUserDetail(String.valueOf(userId), LoginType.BY_ID);
+		return userDetailDao.getUserById(userId);
 	}
 
 }

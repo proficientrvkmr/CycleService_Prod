@@ -23,6 +23,9 @@ public class BikeDetailDao {
 		Query query = session.createQuery("from BikeDetail where id = :bikeId");
 		query.setParameter("bikeId", bikeId);
 		List<?> list = query.list();
+		if(list.isEmpty()){
+			return null;
+		}
 		return (BikeDetail) list.get(0);
 	}
 

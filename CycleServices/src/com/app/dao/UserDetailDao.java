@@ -32,15 +32,15 @@ public class UserDetailDao {
 			if (loginType == LoginType.BY_EMAIL) {
 				logger.info("Load UserDetail by Email \t" + inputValue);
 				queryString = "from UserDetail where emailId=:inputValue";
-				
+
 			} else if (loginType == LoginType.BY_CONTACTNO) {
 				logger.info("Load UserDetail by contactNo \t" + inputValue);
 				queryString = "from UserDetail where contactNo=:inputValue";
-				
+
 			} else if (loginType == LoginType.BY_ID) {
 				logger.info("Load UserDetail by id \t" + inputValue);
 				queryString = "from UserDetail where id=:inputValue";
-				
+
 			} else if (loginType == LoginType.BY_FACEBOOK) {
 				logger.info("Load UserDetail by facebookId \t" + inputValue);
 				queryString = "from UserDetail where facebookId=:inputValue";
@@ -48,13 +48,13 @@ public class UserDetailDao {
 			logger.info("=========================================");
 
 			Query query = session.createQuery(queryString);
-			if(loginType == LoginType.BY_ID){
+			if (loginType == LoginType.BY_ID) {
 				query.setParameter("inputValue", Long.parseLong(inputValue));
 			} else {
 				query.setParameter("inputValue", inputValue);
 			}
 			List<?> userDetailList = query.list();
-			
+
 			if (userDetailList.size() > 0) {
 				userDetail = (UserDetail) userDetailList.get(0);
 				userDetail.setStatusCode("0");
@@ -116,5 +116,18 @@ public class UserDetailDao {
 			HibernateSessionFactory.closeSession();
 		}
 		return result;
+	}
+
+	public UserDetail getUserById(long userId) {
+		Session session = HibernateSessionFactory.currentSession();
+		Query query = session.createQuery("from UserDetail where id = :userId");
+		query.setParameter("userId", userId);
+		List<?> list = query.list();
+		if (list.isEmpty()) {
+			return null;
+		} else {
+			UserDetail userDetail = (UserDetail) list.get(0);
+			return userDetail;
+		}
 	}
 }

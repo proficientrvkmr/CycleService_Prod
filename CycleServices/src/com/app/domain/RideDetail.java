@@ -26,8 +26,8 @@ public class RideDetail implements Serializable {
 	private long id;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "bikeDetailId", nullable = false)
-	private long bikeDetailId;
+	@JoinColumn(name = "bikeDetail", nullable = false)
+	private BikeDetail bikeDetail;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "rideStartPointStationId", nullable = false)
@@ -47,7 +47,10 @@ public class RideDetail implements Serializable {
 	private Date rideStartTime;
 	private Date rideEndTime;
 	private double totalFare;
-
+	private String startingLatitude;
+	private String startingLongitude;
+	private String endingLatitude;
+	private String endingLongitude;
 	
 	public long getId() {
 		return id;
@@ -57,12 +60,12 @@ public class RideDetail implements Serializable {
 		this.id = id;
 	}
 
-	public long getBikeDetailId() {
-		return bikeDetailId;
+	public BikeDetail getBikeDetail() {
+		return bikeDetail;
 	}
 
-	public void setBikeDetailId(long bikeDetailId) {
-		this.bikeDetailId = bikeDetailId;
+	public void setBikeDetail(BikeDetail bikeDetail) {
+		this.bikeDetail = bikeDetail;
 	}
 
 	public StoreMaster getRideStartPointStationId() {
@@ -135,6 +138,38 @@ public class RideDetail implements Serializable {
 
 	public void setTotalFare(double totalFare) {
 		this.totalFare = totalFare;
+	}
+
+	public String getStartingLatitude() {
+		return startingLatitude;
+	}
+
+	public void setStartingLatitude(String startingLatitude) {
+		this.startingLatitude = startingLatitude;
+	}
+
+	public String getStartingLongitude() {
+		return startingLongitude;
+	}
+
+	public void setStartingLongitude(String startingLongitude) {
+		this.startingLongitude = startingLongitude;
+	}
+
+	public String getEndingLatitude() {
+		return endingLatitude;
+	}
+
+	public void setEndingLatitude(String endingLatitude) {
+		this.endingLatitude = endingLatitude;
+	}
+
+	public String getEndingLongitude() {
+		return endingLongitude;
+	}
+
+	public void setEndingLongitude(String endingLongitude) {
+		this.endingLongitude = endingLongitude;
 	}
 
 }

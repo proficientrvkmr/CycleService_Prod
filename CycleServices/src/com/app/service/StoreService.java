@@ -14,22 +14,20 @@ import com.app.util.RestResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class StoreService {
+	private StoreDetailDAO storeDetailDAO = new StoreDetailDAO();
 
-	public Response getAllStores(String longitude, String latitude,
-			String distance) throws JsonProcessingException, JSONException {
-		StoreDetailDAO storeDetailDAO = new StoreDetailDAO();
+	public Response getAllStores() throws JsonProcessingException, JSONException {
 		List<StoreMaster> storeList = storeDetailDAO.getAllStores();
 		JSONArray array = JSONConverterUtil.toJsonArray(storeList);
 		return RestResponse.withSuccessAndData(array);
 	}
 
-	public Response checkServer() {
-		String message = "Running Successfully";
-		return RestResponse.withSuccessAndMessage(message);
+	public Response findAllNearestByMe(String longitude, String latitude, String userId) {
+		return RestResponse.withSuccessAndMessage("Still need to add logic to find nearest by me");
 	}
 
-	public Response findAllNearestByMe(String longitude, String latitude, String userId) {
-		return RestResponse.withSuccess();
+	public StoreMaster getStoreById(long storeId) {
+		return storeDetailDAO.getStoreById(storeId);
 	}
 
 }
