@@ -9,3 +9,4 @@
 /CycleServices/build/classes/com/app/service/*.class
 /CycleServices/build/classes/com/app/util/*.class
 /CycleServices/build/classes/*.properties
+*.class

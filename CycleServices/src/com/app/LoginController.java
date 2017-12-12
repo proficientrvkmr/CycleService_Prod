@@ -4,12 +4,12 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+import com.app.exception.CycleServiceException;
 import com.app.service.LoginService;
 
 @Path("login")
@@ -27,7 +27,7 @@ public class LoginController {
 	@POST
 	@Path("/signupUser")
 	@Produces("application/json;charset=UTF-8")
-	public Response signupUser(JSONObject object) throws JSONException{
+	public Response signupUser(JSONObject object) throws JSONException {
 		String email = object.get("email").toString();
 		String contactNo = object.get("contactNo").toString();
 		return loginService.signupUser(email, contactNo);
@@ -36,8 +36,14 @@ public class LoginController {
 	@POST
 	@Path("/loginUser")
 	@Produces("application/json;charset=UTF-8")
-	public Response loginUser(JSONObject object) throws JSONException {
-		String contactNo = object.get("contactNo").toString();
+	public Response loginUser(JSONObject object) throws CycleServiceException{
+		String contactNo;
+		try {
+			contactNo = object.get("contactNo").toString();
+		} catch (JSONException e) {
+			e.printStackTrace();
+			throw new CycleServiceException("Invalid JSON Request body. Please verify and try again.");
+		}
 		return loginService.loginUser(contactNo);
 	}
 
@@ -55,14 +61,17 @@ public class LoginController {
 	@POST
 	@Path("/resendOTP")
 	@Produces("application/json;charset=UTF-8")
-	public Response resendOTP(@QueryParam("contactNo") String contactNo) {
+	public Response resendOTP(JSONObject object) throws JSONException {
+		String contactNo = object.getString("contactNo").toString();
 		return loginService.resendOTP(contactNo);
 	}
 
 	@POST
 	@Path("/validateOTP")
 	@Produces("application/json;charset=UTF-8")
-	public Response validateOTP(@QueryParam("email") String email, @QueryParam("otpString") String otpString) {
+	public Response validateOTP(JSONObject object) throws JSONException {
+		String email = object.getString("email").toString();
+		String otpString = object.getString("otpString").toString();
 		return loginService.validateOTP(email, otpString);
 	}
 
