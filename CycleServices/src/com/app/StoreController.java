@@ -32,7 +32,7 @@ public class StoreController {
 	@Path("/findAllStores")
 	@Produces("application/json;charset=UTF-8")
 	public Response getAllStores(JSONObject object) throws JSONException, JsonProcessingException {
-		 String userId = object.getString("userId");
+//		 String userId = object.getString("userId");
 		return storeService.getAllStores();
 	}
 
