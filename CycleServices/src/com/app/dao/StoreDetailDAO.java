@@ -18,6 +18,7 @@ public class StoreDetailDAO {
 
 	/**
 	 * save store object
+	 * 
 	 * @param store
 	 * @return
 	 */
@@ -28,9 +29,10 @@ public class StoreDetailDAO {
 		store.setId(Long.parseLong(id.toString()));
 		return store;
 	}
-	
+
 	/**
 	 * update Store
+	 * 
 	 * @param store
 	 * @return
 	 */
@@ -40,9 +42,10 @@ public class StoreDetailDAO {
 		session.beginTransaction().commit();
 		return store;
 	}
-	
+
 	/**
 	 * get all stores
+	 * 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
@@ -63,6 +66,7 @@ public class StoreDetailDAO {
 
 	/**
 	 * get all stores who are unmapped to mongo database.
+	 * 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
@@ -70,7 +74,7 @@ public class StoreDetailDAO {
 		List<StoreMaster> storeList = new ArrayList<>();
 		try {
 			Session session = HibernateSessionFactory.currentSession();
-			Query query = session.createQuery("from StoreMaster where mongoDocumentId not null");
+			Query query = session.createQuery("from StoreMaster where mongoDocumentId is null");
 			List<?> list = query.list();
 			storeList = (List<StoreMaster>) list;
 		} catch (Exception e) {
@@ -80,8 +84,10 @@ public class StoreDetailDAO {
 		}
 		return (List<StoreMaster>) storeList;
 	}
+
 	/**
 	 * get store by id
+	 * 
 	 * @param storeId
 	 * @return
 	 */
@@ -92,7 +98,7 @@ public class StoreDetailDAO {
 			Query query = session.createQuery("from StoreMaster where id = :storeId");
 			query.setParameter("storeId", storeId);
 			List<?> list = query.list();
-			if(!list.isEmpty()){
+			if (!list.isEmpty()) {
 				store = (StoreMaster) list.get(0);
 			}
 		} catch (Exception e) {
