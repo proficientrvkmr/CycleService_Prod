@@ -15,9 +15,6 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 public class RideDetail implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 5167992445866071203L;
 
 	@Id
@@ -28,19 +25,19 @@ public class RideDetail implements Serializable {
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "bikeDetail", nullable = false)
 	private BikeDetail bikeDetail;
-	
+
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "rideStartPointStationId", nullable = false)
 	private StoreMaster rideStartPointStationId;
-	
+
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "rideEndPointStationId", nullable = false)
 	private StoreMaster rideEndPointStationId;
-	
+
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "userDetail", nullable = false)
 	private UserDetail userDetail;
-	
+
 	private String currentStatus;
 	private double distanceTravel;
 	private long timeTravel;
@@ -51,7 +48,7 @@ public class RideDetail implements Serializable {
 	private String startingLongitude;
 	private String endingLatitude;
 	private String endingLongitude;
-	
+
 	public long getId() {
 		return id;
 	}
