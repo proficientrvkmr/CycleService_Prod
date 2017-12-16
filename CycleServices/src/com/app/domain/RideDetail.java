@@ -12,6 +12,11 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.GenericGenerator;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 @Entity
 public class RideDetail implements Serializable {
 

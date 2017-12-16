@@ -11,6 +11,11 @@ import com.app.domain.BikeDetail;
 import com.app.service.BikeService;
 import com.app.util.JSONConverterUtil;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 @Path("bike")
 public class BikeController {
 	

@@ -1,5 +1,10 @@
 package com.app.exception;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 public class CycleServiceException extends Exception {
 
 	/**

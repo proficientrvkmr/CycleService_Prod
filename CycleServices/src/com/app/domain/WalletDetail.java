@@ -11,6 +11,11 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 @Entity
 @Table
 public class WalletDetail implements Serializable {

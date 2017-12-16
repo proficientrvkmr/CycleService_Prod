@@ -9,6 +9,11 @@ import com.app.dao.WalletDetailDAO;
 import com.app.domain.UserDetail;
 import com.app.util.RestResponse;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 public class WalletService {
 
 	private WalletDetailDAO walletDetailDAO = new WalletDetailDAO();

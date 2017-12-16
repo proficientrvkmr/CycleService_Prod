@@ -13,6 +13,11 @@ import com.app.config.hibernate.HibernateSessionFactory;
 import com.app.domain.RideDetail;
 import com.app.domain.UserDetail;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 public class RideDetailDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(RideDetailDao.class);

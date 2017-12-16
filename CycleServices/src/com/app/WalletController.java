@@ -11,6 +11,11 @@ import org.codehaus.jettison.json.JSONObject;
 
 import com.app.service.WalletService;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 @Path("wallet")
 public class WalletController {
 

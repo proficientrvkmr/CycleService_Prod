@@ -18,21 +18,27 @@ import com.app.domain.RideDetail;
 import com.app.domain.RideStatus;
 import com.app.domain.StoreMaster;
 import com.app.domain.UserDetail;
+import com.app.util.ApplicationConstant;
 import com.app.util.JSONConverterUtil;
 import com.app.util.RestResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 public class RideService {
 
 	private static final Logger logger = LoggerFactory.getLogger(RideService.class);
-	private static final double RATE = 6.75;
+	
 	private BikeService bikeService = new BikeService();
 	private LoginService userService = new LoginService();
 	private RideDetailDao rideDetailDao = new RideDetailDao();
 	private StoreService storeService = new StoreService();
 
 	public Response getRidePriceBetweenStation(double distance) {
-		double totalCost = distance * RATE;
+		double totalCost = distance * ApplicationConstant.rideRATE;
 		JSONObject object = new JSONObject();
 		try {
 			object.put("expectedCost", totalCost);
@@ -133,7 +139,7 @@ public class RideService {
 			ride.setEndingLatitude(endingLatitude);
 			ride.setEndingLongitude(endingLongitude);
 			ride.setCurrentStatus(RideStatus.COMPLETE.name());
-			double totalFare = distanceTravel * RATE;
+			double totalFare = distanceTravel * ApplicationConstant.rideRATE;
 			ride.setTotalFare(totalFare);
 
 			try {

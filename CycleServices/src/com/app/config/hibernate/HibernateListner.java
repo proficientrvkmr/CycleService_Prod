@@ -4,6 +4,11 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 @WebListener
 public class HibernateListner implements ServletContextListener {
 	

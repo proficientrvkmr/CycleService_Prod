@@ -5,8 +5,12 @@ import javax.ws.rs.core.Response;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 public class RestResponse {
-
 	private static final String STATUS_CODE = "statusCode";
 	private static final String STATUS = "status";
 	private static final String SUCCESS = "success";
@@ -63,7 +67,7 @@ public class RestResponse {
 		}
 		return Response.ok(body.toString()).build();
 	}
-	
+
 	public static Response withError() {
 		JSONObject body = new JSONObject();
 		try {

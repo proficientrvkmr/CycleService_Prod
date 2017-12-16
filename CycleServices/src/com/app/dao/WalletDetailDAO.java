@@ -11,6 +11,11 @@ import com.app.config.hibernate.HibernateSessionFactory;
 import com.app.domain.UserDetail;
 import com.app.domain.WalletDetail;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 public class WalletDetailDAO {
 	
 	private static final Logger logger = LoggerFactory.getLogger(StoreDetailDAO.class);

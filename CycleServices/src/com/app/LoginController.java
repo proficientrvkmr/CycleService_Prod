@@ -9,7 +9,6 @@ import javax.ws.rs.core.Response;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.app.exception.CycleServiceException;
 import com.app.service.LoginService;
 
 @Path("login")
@@ -36,14 +35,8 @@ public class LoginController {
 	@POST
 	@Path("/loginUser")
 	@Produces("application/json;charset=UTF-8")
-	public Response loginUser(JSONObject object) throws CycleServiceException{
-		String contactNo;
-		try {
-			contactNo = object.get("contactNo").toString();
-		} catch (JSONException e) {
-			e.printStackTrace();
-			throw new CycleServiceException("Invalid JSON Request body. Please verify and try again.");
-		}
+	public Response loginUser(JSONObject object) throws JSONException {
+		String contactNo = object.get("contactNo").toString();
 		return loginService.loginUser(contactNo);
 	}
 

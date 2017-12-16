@@ -8,6 +8,11 @@ import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 @Entity
 public class BikeDetail implements Serializable {
 

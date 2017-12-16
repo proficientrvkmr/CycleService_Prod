@@ -12,6 +12,11 @@ import org.slf4j.LoggerFactory;
 import com.app.config.hibernate.HibernateSessionFactory;
 import com.app.domain.StoreMaster;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 public class StoreDetailDAO {
 
 	private static final Logger logger = LoggerFactory.getLogger(StoreDetailDAO.class);

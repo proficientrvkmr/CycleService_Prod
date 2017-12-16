@@ -119,7 +119,7 @@ public class LoginService {
 				if (contactUserDetail.getStatusCode().equals("0")) {
 					// old User
 					obj.put("status", "Success");
-					obj.put("message", "Login Successful");
+					obj.put("message", "Login Successfully");
 					JSONObject obj1 = new JSONObject();
 					String email = contactUserDetail.getEmailId();
 					String otp = GenerateOTP.generateOTP();

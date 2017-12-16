@@ -8,6 +8,11 @@ import org.hibernate.Session;
 import com.app.config.hibernate.HibernateSessionFactory;
 import com.app.domain.BikeDetail;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 public class BikeDetailDao {
 
 	public BikeDetail saveBikeDetail(BikeDetail bikeDetail) {

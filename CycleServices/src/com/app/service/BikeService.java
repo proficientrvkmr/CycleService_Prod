@@ -10,6 +10,11 @@ import com.app.domain.BikeDetail;
 import com.app.util.RestResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 public class BikeService {
 
 	private BikeDetailDao bikeDetailDao = new BikeDetailDao();

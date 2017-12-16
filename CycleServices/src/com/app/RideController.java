@@ -12,6 +12,11 @@ import org.codehaus.jettison.json.JSONObject;
 import com.app.service.RideService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 @Path("ride")
 public class RideController {
 

@@ -11,6 +11,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * 
+ * @author Ravi Kumar
+ *
+ */
 public class JSONConverterUtil {
 
 	private static ObjectMapper objectMapper = new ObjectMapper();
