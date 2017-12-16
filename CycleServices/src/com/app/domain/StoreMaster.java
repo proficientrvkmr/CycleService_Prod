@@ -31,6 +31,7 @@ public class StoreMaster implements Serializable {
 	private double longitude;
 	private double latitude;
 	private Date createdDate;
+	private Date modifiedDate;
 	private String isActive;
 	private String storeType;
 	private String mongoDocumentId;
@@ -125,5 +126,13 @@ public class StoreMaster implements Serializable {
 
 	public void setMongoDocumentId(String mongoDocumentId) {
 		this.mongoDocumentId = mongoDocumentId;
+	}
+
+	public Date getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(Date modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 }

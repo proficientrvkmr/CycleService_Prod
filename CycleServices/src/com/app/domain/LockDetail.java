@@ -32,4 +32,29 @@ public class LockDetail implements Serializable {
 	@JoinColumn(name = "bikeDetail", nullable = false)
 	private BikeDetail bikeDetail;
 
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getLockSecretCode() {
+		return lockSecretCode;
+	}
+
+	public void setLockSecretCode(String lockSecretCode) {
+		this.lockSecretCode = lockSecretCode;
+	}
+
+	public BikeDetail getBikeDetail() {
+		return bikeDetail;
+	}
+
+	public void setBikeDetail(BikeDetail bikeDetail) {
+		this.bikeDetail = bikeDetail;
+	}
+	
 }

@@ -1,5 +1,6 @@
 package com.app.service;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -117,6 +118,17 @@ public class StoreService {
 			return RestResponse.withSuccessAndMessage("Successfully!! Data is migrated from Mysql to Mongo DB.");
 		}
 
+	}
+
+	public Response storeRegister(StoreMaster store) throws JSONException {
+		store.setCreatedDate(new Date());
+		store.setModifiedDate(new Date());
+		store.setIsActive("1");
+		StoreMaster savedObject = storeDetailDAO.saveStore(store);
+		JSONObject object = new JSONObject();
+		object.put("storeId", savedObject.getId());
+		object.put("message", "New store saved successfully.");
+		return RestResponse.withSuccessAndData(object);
 	}
 
 }
