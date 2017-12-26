@@ -45,10 +45,8 @@ public class LockController {
 	@Path("/verify")
 	@Produces("application/json;charset=UTF-8")
 	public Response verify(JSONObject object) throws JSONException {
-		long lockId = object.getLong("lockId");
 		long userId = object.getLong("userId");
-		long bikeId = object.getLong("bikeId");
 		String lockSecretCode = object.get("lockCode").toString();
-		return lockService.lockRegister(lockId, lockSecretCode, userId, bikeId);
+		return lockService.lockRegister(lockSecretCode, userId);
 	}
 }

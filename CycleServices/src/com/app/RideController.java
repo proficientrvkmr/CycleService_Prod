@@ -45,18 +45,18 @@ public class RideController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response rideStarts(JSONObject object) throws JSONException {
 		JSONObject startStation = (JSONObject) object.get("startStation");
-		String startingStationId = startStation.getString("stationId");
-		// String startingStationLongitude =
-		// startStation.getString("longitude");
-		// String startingStationLatitude = startStation.getString("latitude");
+		long startingStationId = startStation.getLong("stationId");
+		// double startingStationLongitude =
+		// startStation.getDouble("longitude");
+		// double startingStationLatitude = startStation.getDouble("latitude");
 
 		JSONObject endStation = (JSONObject) object.get("endStation");
-		String endingStationId = endStation.getString("stationId");
-		// String endingStationLongitude = endStation.getString("longitude");
-		// String endingStationLatitude = endStation.getString("latitude");
+		long endingStationId = endStation.getLong("stationId");
+		// double endingStationLongitude = endStation.getDouble("longitude");
+		// double endingStationLatitude = endStation.getDouble("latitude");
 
-		String bikeId = object.getString("bikeId");
-		String userId = object.getString("userId");
+		long bikeId = object.getLong("bikeId");
+		long userId = object.getLong("userId");
 		return rideService.rideStarts(startingStationId, endingStationId, userId, bikeId);
 	}
 
@@ -101,7 +101,7 @@ public class RideController {
 		return rideService.completeRide(rideId, rideStartTime, rideEndTime, startingLatitude, startingLongitude,
 				endingLatitude, endingLongitude, distanceTravel, timeTravel);
 	}
-	
+
 	@POST
 	@Path("/getAllRideByUserId")
 	@Produces(MediaType.APPLICATION_JSON)

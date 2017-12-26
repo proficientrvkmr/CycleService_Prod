@@ -34,4 +34,15 @@ public class LockDetailDao {
 		return (LockDetail) list.get(0);
 	}
 
+	public LockDetail getLockByLockCode(String lockCode) {
+		Session session = HibernateSessionFactory.currentSession();
+		Query query = session.createQuery("from LockDetail where lockSecretCode = :lockCode");
+		query.setParameter("lockCode", lockCode);
+		List<?> list = query.list();
+		if (list.isEmpty()) {
+			return null;
+		}
+		return (LockDetail) list.get(0);
+	}
+
 }

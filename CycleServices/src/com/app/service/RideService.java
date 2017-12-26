@@ -31,14 +31,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class RideService {
 
 	private static final Logger logger = LoggerFactory.getLogger(RideService.class);
-	
+
 	private BikeService bikeService = new BikeService();
 	private LoginService userService = new LoginService();
 	private RideDetailDao rideDetailDao = new RideDetailDao();
 	private StoreService storeService = new StoreService();
 
 	public Response getRidePriceBetweenStation(double distance) {
-		double totalCost = distance * ApplicationConstant.rideRATE;
+		double totalCost = distance * ApplicationConstant.rideDistanceRATE;
 		JSONObject object = new JSONObject();
 		try {
 			object.put("expectedCost", totalCost);
@@ -63,11 +63,11 @@ public class RideService {
 		return RestResponse.withSuccessAndData(object);
 	}
 
-	public Response rideStarts(String startingStationId, String endingStationId, String userId, String bikeId) {
-		BikeDetail bikeUsed = bikeService.getBikeById(Long.parseLong(bikeId));
-		StoreMaster startingStation = storeService.getStoreById(Long.parseLong(startingStationId));
-		StoreMaster endingStation = storeService.getStoreById(Long.parseLong(endingStationId));
-		UserDetail user = userService.getUserById(Long.parseLong(userId));
+	public Response rideStarts(long startingStationId, long endingStationId, long userId, long bikeId) {
+		BikeDetail bikeUsed = bikeService.getBikeById(bikeId);
+		StoreMaster startingStation = storeService.getStoreById(startingStationId);
+		StoreMaster endingStation = storeService.getStoreById(endingStationId);
+		UserDetail user = userService.getUserById(userId);
 
 		if (bikeUsed != null && startingStation != null && endingStation != null && user != null) {
 			RideDetail newRide = new RideDetail();
@@ -139,7 +139,8 @@ public class RideService {
 			ride.setEndingLatitude(endingLatitude);
 			ride.setEndingLongitude(endingLongitude);
 			ride.setCurrentStatus(RideStatus.COMPLETE.name());
-			double totalFare = distanceTravel * ApplicationConstant.rideRATE;
+			double totalFare = distanceTravel * ApplicationConstant.rideDistanceRATE;
+			totalFare = totalFare + timeTravel * ApplicationConstant.rideTimeRATE;
 			ride.setTotalFare(totalFare);
 
 			try {
@@ -164,7 +165,7 @@ public class RideService {
 
 	public Response getAllRideByUserId(long userId) throws JsonProcessingException, JSONException {
 		UserDetail user = userService.getUserById(userId);
-		if(user != null){
+		if (user != null) {
 			List<RideDetail> allRides = rideDetailDao.getAllRideByUserId(userId);
 			JSONArray array = JSONConverterUtil.toJsonArray(allRides);
 			return RestResponse.withSuccessAndData(array);

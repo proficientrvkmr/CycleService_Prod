@@ -74,7 +74,7 @@ public class LoginService {
 					obj1.put("otp", otp);
 					obj1.put("email", contactUserDetail.getEmailId());
 					obj1.put("mobileNo", contactUserDetail.getContactNo());
-
+					obj1.put("userId", contactUserDetail.getId());
 					obj.put("object", obj1);
 				} else {
 					// old User
@@ -83,6 +83,7 @@ public class LoginService {
 					obj1.put("otp", otp);
 					obj1.put("email", contactUserDetail.getEmailId());
 					obj1.put("mobileNo", contactUserDetail.getContactNo());
+					obj1.put("userId", contactUserDetail.getId());
 
 					obj.put("object", obj1);
 				}
@@ -125,6 +126,7 @@ public class LoginService {
 					String otp = GenerateOTP.generateOTP();
 					obj1.put("otp", otp);
 					obj1.put("email", contactUserDetail.getEmailId());
+					obj1.put("userId", contactUserDetail.getId());
 					obj1.put("mobileNo", contactUserDetail.getContactNo());
 					obj.put("object", obj1);
 
@@ -176,14 +178,16 @@ public class LoginService {
 					userDetail.setEmailId(email);
 					userDetail.setFacebookId(facebookId);
 					userDetail.setUserName(userName);
-					userDetailDao.saveUserDetail(userDetail);
+					long userId = userDetailDao.saveUserDetail(userDetail);
 					obj.put("status", "success");
 					obj.put("message", "New User created");
+					obj.put("userId", userId);
 					obj.put("otp", otp);
 				} else {
 					// old User
 					obj.put("statusCode", "success");
 					obj.put("message", "Existing User");
+					obj.put("userId", fbUserDetail.getId());
 					obj.put("otp", otp);
 				}
 
@@ -240,14 +244,13 @@ public class LoginService {
 						+ otp;
 				sendMail.transferToMailServer(email, subject, emailMessage);
 
-				obj.put("status", "success");
-				obj.put("message", "OTP sent to user");
+				obj.put("message", "OTP has sent to user successfully!");
 
-				JSONObject obj1 = new JSONObject();
-				obj1.put("otp", otp);
-				obj1.put("email", contactUserDetail.getEmailId());
-				obj1.put("mobileNo", contactUserDetail.getContactNo());
-				obj.put("object", obj1);
+//				JSONObject obj1 = new JSONObject();
+//				obj1.put("otp", otp);
+//				obj1.put("email", contactUserDetail.getEmailId());
+//				obj1.put("mobileNo", contactUserDetail.getContactNo());
+//				obj.put("object", obj1);
 
 			} else {
 				obj.put("message", "");
@@ -279,17 +282,18 @@ public class LoginService {
 			logger.info("********************************************");
 
 			int result = UserDetailDao.validateOTP(email, otpString);
+			UserDetail contactUserDetail = userDetailDao.loadUserDetail(email, LoginType.BY_EMAIL);
 			if (result == 1) {
-				obj.put("status", "Success");
 				obj.put("message", "OTP Matched");
+				obj.put("email", contactUserDetail.getEmailId());
+				obj.put("userId", contactUserDetail.getId());
+				obj.put("mobileNo", contactUserDetail.getContactNo());
 			} else {
-				obj.put("status", "Fail");
 				obj.put("message", "This is not one which we sent");
 			}
 
 		} catch (Exception e) {
 			try {
-				obj.put("status", "Fail");
 				obj.put("message", "Something went wrong. Contact Administrator");
 			} catch (JSONException e1) {
 				e1.printStackTrace();

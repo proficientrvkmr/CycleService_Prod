@@ -43,13 +43,13 @@ public class StoreController {
 		}
 		return response;
 	}
-	
+
 	@POST
 	@Path("/findAllStoresNearestByMe")
 	@Produces("application/json;charset=UTF-8")
 	public Response findAllNearestByMe(JSONObject object) throws JSONException {
-		double latitude = object.getDouble("my_latitude");
-		double longitude = object.getDouble("my_longitude");
+		double latitude = object.getDouble("latitude");
+		double longitude = object.getDouble("longitude");
 		long radius = object.getLong("radius");
 		long userId = object.getLong("userId");
 		return storeService.findAllNearestByMe(longitude, latitude, radius, userId);
@@ -70,7 +70,7 @@ public class StoreController {
 		String message = "Running Successfully";
 		return RestResponse.withSuccessAndMessage(message);
 	}
-	
+
 	@GET
 	@Path("/moveFromMysqlToMongoDB")
 	@Produces("application/json;charset=UTF-8")
