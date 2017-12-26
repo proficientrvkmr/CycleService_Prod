@@ -67,14 +67,14 @@ public class LoginService {
 					UserDetail userDetail = new UserDetail();
 					userDetail.setContactNo(contactNo);
 					userDetail.setEmailId(email);
-					userDetailDao.saveUserDetail(userDetail);
+					long userId = userDetailDao.saveUserDetail(userDetail);
 					obj.put("status", "Success");
 					obj.put("message", "Registration Successful");
 
 					obj1.put("otp", otp);
 					obj1.put("email", contactUserDetail.getEmailId());
 					obj1.put("mobileNo", contactUserDetail.getContactNo());
-					obj1.put("userId", contactUserDetail.getId());
+					obj1.put("userId", userId);
 					obj.put("object", obj1);
 				} else {
 					// old User
@@ -84,7 +84,6 @@ public class LoginService {
 					obj1.put("email", contactUserDetail.getEmailId());
 					obj1.put("mobileNo", contactUserDetail.getContactNo());
 					obj1.put("userId", contactUserDetail.getId());
-
 					obj.put("object", obj1);
 				}
 			} else {
@@ -246,11 +245,11 @@ public class LoginService {
 
 				obj.put("message", "OTP has sent to user successfully!");
 
-//				JSONObject obj1 = new JSONObject();
-//				obj1.put("otp", otp);
-//				obj1.put("email", contactUserDetail.getEmailId());
-//				obj1.put("mobileNo", contactUserDetail.getContactNo());
-//				obj.put("object", obj1);
+				// JSONObject obj1 = new JSONObject();
+				// obj1.put("otp", otp);
+				// obj1.put("email", contactUserDetail.getEmailId());
+				// obj1.put("mobileNo", contactUserDetail.getContactNo());
+				// obj.put("object", obj1);
 
 			} else {
 				obj.put("message", "");
