@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.app.config.hibernate.HibernateSessionFactory;
 import com.app.domain.RideDetail;
+import com.app.domain.RideStatus;
 import com.app.domain.UserDetail;
 
 /**
@@ -55,10 +56,11 @@ public class RideDetailDao {
 		List<RideDetail> storeList = new ArrayList<>();
 		try {
 			Session session = HibernateSessionFactory.currentSession();
-			Query query = session.createQuery("from RideDetail where userDetail = :user");
+			Query query = session.createQuery("from RideDetail where userDetail = :user and currentStatus = :status");
 			UserDetail user = new UserDetail();
 			user.setId(userId);
 			query.setParameter("user", user);
+			query.setParameter("status", RideStatus.COMPLETE.name());
 			List<?> list = query.list();
 			storeList = (List<RideDetail>) list;
 		} catch (Exception e) {

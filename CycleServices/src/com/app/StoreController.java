@@ -2,7 +2,6 @@ package com.app;
 
 import java.io.IOException;
 
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -14,7 +13,6 @@ import org.codehaus.jettison.json.JSONObject;
 import com.app.domain.StoreMaster;
 import com.app.service.StoreService;
 import com.app.util.JSONConverterUtil;
-import com.app.util.RestResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
@@ -61,21 +59,6 @@ public class StoreController {
 	public Response getAllStores(JSONObject object) throws JSONException, JsonProcessingException {
 		// String userId = object.getString("userId");
 		return storeService.getAllStores();
-	}
-
-	@GET
-	@Path("/checkServer")
-	@Produces("application/json;charset=UTF-8")
-	public Response checkServer() {
-		String message = "Running Successfully";
-		return RestResponse.withSuccessAndMessage(message);
-	}
-
-	@GET
-	@Path("/moveFromMysqlToMongoDB")
-	@Produces("application/json;charset=UTF-8")
-	public Response moveFromMysqlToMongoDB() {
-		return storeService.moveFromMysqlToMongoDB();
 	}
 
 }
