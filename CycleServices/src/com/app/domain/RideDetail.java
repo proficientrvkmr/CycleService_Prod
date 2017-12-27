@@ -49,10 +49,10 @@ public class RideDetail implements Serializable {
 	private Date rideStartTime;
 	private Date rideEndTime;
 	private double totalFare;
-	private String startingLatitude;
-	private String startingLongitude;
-	private String endingLatitude;
-	private String endingLongitude;
+	private double startingLatitude;
+	private double startingLongitude;
+	private double endingLatitude;
+	private double endingLongitude;
 
 	public long getId() {
 		return id;
@@ -142,35 +142,35 @@ public class RideDetail implements Serializable {
 		this.totalFare = totalFare;
 	}
 
-	public String getStartingLatitude() {
+	public double getStartingLatitude() {
 		return startingLatitude;
 	}
 
-	public void setStartingLatitude(String startingLatitude) {
+	public void setStartingLatitude(double startingLatitude) {
 		this.startingLatitude = startingLatitude;
 	}
 
-	public String getStartingLongitude() {
+	public double getStartingLongitude() {
 		return startingLongitude;
 	}
 
-	public void setStartingLongitude(String startingLongitude) {
+	public void setStartingLongitude(double startingLongitude) {
 		this.startingLongitude = startingLongitude;
 	}
 
-	public String getEndingLatitude() {
+	public double getEndingLatitude() {
 		return endingLatitude;
 	}
 
-	public void setEndingLatitude(String endingLatitude) {
+	public void setEndingLatitude(double endingLatitude) {
 		this.endingLatitude = endingLatitude;
 	}
 
-	public String getEndingLongitude() {
+	public double getEndingLongitude() {
 		return endingLongitude;
 	}
 
-	public void setEndingLongitude(String endingLongitude) {
+	public void setEndingLongitude(double endingLongitude) {
 		this.endingLongitude = endingLongitude;
 	}
 

@@ -64,17 +64,17 @@ public class RideController {
 	@Path("/update")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateLastLocation(JSONObject object) throws JSONException {
-		String rideId = object.getString("rideId");
-		Object rideStartTime = object.get("rideStartTime");
-		Object rideEndTime = object.get("rideEndTime");
+		long rideId = object.getLong("rideId");
+		String rideStartTime = object.getString("rideStartTime");
+		String rideEndTime = object.getString("rideEndTime");
 
 		JSONObject startPoint = object.getJSONObject("startPoint");
-		String startingLatitude = startPoint.getString("latitude");
-		String startingLongitude = startPoint.getString("longitude");
+		double startingLatitude = startPoint.getDouble("latitude");
+		double startingLongitude = startPoint.getDouble("longitude");
 
 		JSONObject endPoint = object.getJSONObject("endPoint");
-		String endingLatitude = endPoint.getString("latitude");
-		String endingLongitude = endPoint.getString("longitude");
+		double endingLatitude = endPoint.getDouble("latitude");
+		double endingLongitude = endPoint.getDouble("longitude");
 
 		return rideService.updateRide(rideId, rideStartTime, rideEndTime, startingLatitude, startingLongitude,
 				endingLatitude, endingLongitude);
@@ -84,17 +84,17 @@ public class RideController {
 	@Path("/complete")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response rideCompleted(JSONObject object) throws JSONException {
-		String rideId = object.getString("rideId");
-		Object rideStartTime = object.get("rideStartTime");
-		Object rideEndTime = object.get("rideEndTime");
-
+		long rideId = object.getLong("rideId");
+		String rideStartTime = object.getString("rideStartTime");
+		String rideEndTime = object.getString("rideEndTime");
+		
 		JSONObject startPoint = object.getJSONObject("startPoint");
-		String startingLatitude = startPoint.getString("latitude");
-		String startingLongitude = startPoint.getString("longitude");
+		double startingLatitude = startPoint.getDouble("latitude");
+		double startingLongitude = startPoint.getDouble("longitude");
 
 		JSONObject endPoint = object.getJSONObject("endPoint");
-		String endingLatitude = endPoint.getString("latitude");
-		String endingLongitude = endPoint.getString("longitude");
+		double endingLatitude = endPoint.getDouble("latitude");
+		double endingLongitude = endPoint.getDouble("longitude");
 
 		double distanceTravel = object.getDouble("distanceTravel");
 		long timeTravel = object.getLong("timeTaken");

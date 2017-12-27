@@ -1,11 +1,12 @@
 package com.app.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
 
-import org.apache.http.client.utils.DateUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -97,12 +98,19 @@ public class RideService {
 
 	}
 
-	public Response updateRide(String rideId, Object rideStartTime, Object rideEndTime, String startingLatitude,
-			String startingLongitude, String endingLatitude, String endingLongitude) {
-		RideDetail ride = rideDetailDao.getRideDetailById(Long.parseLong(rideId));
+	public Response updateRide(long rideId, String rideStartTime, String rideEndTime, double startingLatitude,
+			double startingLongitude, double endingLatitude, double endingLongitude) {
+		RideDetail ride = rideDetailDao.getRideDetailById(rideId);
 		if (ride != null) {
-			ride.setRideStartTime(DateUtils.parseDate(rideStartTime.toString()));
-			ride.setRideEndTime(DateUtils.parseDate(rideEndTime.toString()));
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			try {
+				ride.setRideStartTime(dateFormat.parse(rideStartTime));
+				ride.setRideEndTime(dateFormat.parse(rideEndTime));
+			} catch (ParseException e1) {
+				logger.error("===================**************=================");
+				logger.error(e1.toString());
+				logger.error("===================**************=================");
+			}
 			ride.setStartingLatitude(startingLatitude);
 			ride.setStartingLongitude(startingLongitude);
 			ride.setEndingLatitude(endingLatitude);
@@ -125,13 +133,20 @@ public class RideService {
 		}
 	}
 
-	public Response completeRide(String rideId, Object rideStartTime, Object rideEndTime, String startingLatitude,
-			String startingLongitude, String endingLatitude, String endingLongitude, double distanceTravel,
+	public Response completeRide(long rideId, String rideStartTime, String rideEndTime, double startingLatitude,
+			double startingLongitude, double endingLatitude, double endingLongitude, double distanceTravel,
 			long timeTravel) {
-		RideDetail ride = rideDetailDao.getRideDetailById(Long.parseLong(rideId));
+		RideDetail ride = rideDetailDao.getRideDetailById(rideId);
 		if (ride != null) {
-			ride.setRideStartTime(DateUtils.parseDate(rideStartTime.toString()));
-			ride.setRideEndTime(DateUtils.parseDate(rideEndTime.toString()));
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			try {
+				ride.setRideStartTime(dateFormat.parse(rideStartTime));
+				ride.setRideEndTime(dateFormat.parse(rideEndTime));
+			} catch (ParseException e1) {
+				logger.error("===================**************=================");
+				logger.error(e1.toString());
+				logger.error("===================**************=================");
+			}
 			ride.setDistanceTravel(distanceTravel);
 			ride.setTimeTravel(timeTravel);
 			ride.setStartingLatitude(startingLatitude);
