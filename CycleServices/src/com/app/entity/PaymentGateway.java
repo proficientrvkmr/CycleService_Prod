@@ -1,7 +1,5 @@
-package com.orobind.core.entity;
+package com.app.entity;
 
-// default package
-// Generated 20 Aug, 2014 5:27:25 PM by Hibernate Tools 3.2.4.GA
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -43,7 +41,7 @@ public class PaymentGateway implements java.io.Serializable {
 			0);
 	private String reconciliationDateExp;
 	private Date created;
-	private Date updated;
+	private Date updated;	
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

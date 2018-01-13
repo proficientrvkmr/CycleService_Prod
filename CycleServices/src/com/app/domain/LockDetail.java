@@ -32,6 +32,9 @@ public class LockDetail implements Serializable {
 	@JoinColumn(name = "bikeDetail", nullable = false)
 	private BikeDetail bikeDetail;
 
+	@Column(unique = true)
+	private String bluetoothAddress;
+	
 	
 	public long getId() {
 		return id;
@@ -57,4 +60,12 @@ public class LockDetail implements Serializable {
 		this.bikeDetail = bikeDetail;
 	}
 	
+	public String getBluetoothAddress() {
+		return bluetoothAddress;
+	}
+
+	public void setBluetoothAddress(String bluetoothAddress) {
+		this.bluetoothAddress = bluetoothAddress;
+	}
+
 }

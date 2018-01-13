@@ -1,6 +1,4 @@
-package com.orobind.core.entity;
-
-// Generated Mar 30, 2014 10:59:42 AM by Hibernate Tools 3.3.0.GA
+package com.app.entity;
 
 import static javax.persistence.GenerationType.IDENTITY;
 

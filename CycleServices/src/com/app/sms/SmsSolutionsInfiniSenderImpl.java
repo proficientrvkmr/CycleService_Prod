@@ -1,11 +1,4 @@
-/*
- *  Copyright 2015 OROBIND (P) Limited . All Rights Reserved.
- *  OROBIND PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *  
- *  @version     1.0, 03-Mar-2015
- *  @author shubhanshu
- */
-package com.orobind.services.sms;
+package com.app.sms;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -15,12 +8,10 @@ import java.net.URLEncoder;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
-@Service("smsSolutionsInfiniSender")
 public class SmsSolutionsInfiniSenderImpl implements ISmsSolutionsInfiniSender {
 
     private static final Logger LOG = LoggerFactory.getLogger(SmsSolutionsInfiniSenderImpl.class);
@@ -43,7 +34,7 @@ urlBuffer.append("http://alerts.solutionsinfini.com/api/v3/index.php?method=sms"
 
         String url = urlBuffer.toString();
 
-        HttpClient client = new DefaultHttpClient();
+        HttpClient client = HttpClientBuilder.create().build();
         HttpGet request = new HttpGet(url);
 
         LOG.info("Trying to send out message : " + type + ", To : " + to + ", Body : " + body);

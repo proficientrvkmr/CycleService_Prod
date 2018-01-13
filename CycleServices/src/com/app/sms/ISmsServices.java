@@ -1,13 +1,4 @@
-/*
- *  Copyright 2015 OROBIND (P) Limited . All Rights Reserved.
- *  OROBIND PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
- *  
- *  @version     1.0, 03-Mar-2015
- *  @author shubhanshu
- */
-package com.orobind.services.sms;
-
-import java.util.Date;
+package com.app.sms;
 
 public interface ISmsServices {
 

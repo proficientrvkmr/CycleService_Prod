@@ -1,6 +1,5 @@
-package com.orobind.core.entity;
+package com.app.entity;
 
-// Generated Oct 3, 2014 1:19:27 PM by Hibernate Tools 3.3.0.GA
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -15,7 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
