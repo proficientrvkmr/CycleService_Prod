@@ -30,7 +30,7 @@ public class UserDetail implements Serializable {
 	private String facebookId;
 	@Transient
 	private String statusCode;
-	
+	private String referenceCode;
 	
 	public String getStatusCode() {
 		return statusCode;
@@ -102,5 +102,13 @@ public class UserDetail implements Serializable {
 
 	public void setFacebookId(String facebookId) {
 		this.facebookId = facebookId;
+	}
+
+	public String getReferenceCode() {
+		return referenceCode;
+	}
+
+	public void setReferenceCode(String referenceCode) {
+		this.referenceCode = referenceCode;
 	}
 }

@@ -63,6 +63,7 @@ public class LockService {
 			object.put("message", "Lock verified successfully!.");
 			object.put("lockId", lock.getId());
 			object.put("bikeId", lock.getBikeDetail().getId());
+			object.put("bluetoothAddress", lock.getBluetoothAddress());
 
 			return RestResponse.withSuccessAndData(object);
 		} else {

@@ -11,12 +11,17 @@ import com.app.config.hibernate.HibernateSessionFactory;
 import com.app.domain.EmailOTPTracking;
 import com.app.domain.LoginType;
 import com.app.domain.UserDetail;
+import com.app.util.GenerateTokenUtil;
 
 public class UserDetailDao {
 	private static final Logger logger = LoggerFactory.getLogger(UserDetailDao.class);
 
 	public long saveUserDetail(UserDetail userDetail) {
 		long result = 0;
+		if(userDetail.getReferenceCode().isEmpty()){
+			String referCode = GenerateTokenUtil.generateReferCode(7);
+			userDetail.setReferenceCode(referCode);
+		}
 		Session session = HibernateSessionFactory.currentSession();
 		result = (Long) session.save(userDetail);
 		session.beginTransaction().commit();

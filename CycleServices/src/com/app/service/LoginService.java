@@ -13,7 +13,7 @@ import com.app.domain.EmailOTPTracking;
 import com.app.domain.LoginType;
 import com.app.domain.UserDetail;
 import com.app.mail.SendMail;
-import com.app.util.GenerateOTP;
+import com.app.util.GenerateTokenUtil;
 import com.app.util.RestResponse;
 
 public class LoginService {
@@ -49,7 +49,7 @@ public class LoginService {
 		try {
 			if (!contactNo.equals("")) {
 				contactUserDetail = userDetailDao.loadUserDetail(contactNo, LoginType.BY_CONTACTNO);
-				String otp = GenerateOTP.generateOTP();
+				String otp = GenerateTokenUtil.generateOTP();
 				EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
 				emailOTPTracking.setEmailId(email);
 				emailOTPTracking.setSentOTP(otp);
@@ -84,6 +84,7 @@ public class LoginService {
 					obj1.put("email", contactUserDetail.getEmailId());
 					obj1.put("mobileNo", contactUserDetail.getContactNo());
 					obj1.put("userId", contactUserDetail.getId());
+					obj.put("referenceCode", contactUserDetail.getReferenceCode());
 					obj.put("object", obj1);
 				}
 			} else {
@@ -122,11 +123,12 @@ public class LoginService {
 					obj.put("message", "Login Successfully");
 					JSONObject obj1 = new JSONObject();
 					String email = contactUserDetail.getEmailId();
-					String otp = GenerateOTP.generateOTP();
+					String otp = GenerateTokenUtil.generateOTP();
 					obj1.put("otp", otp);
 					obj1.put("email", contactUserDetail.getEmailId());
 					obj1.put("userId", contactUserDetail.getId());
 					obj1.put("mobileNo", contactUserDetail.getContactNo());
+					obj.put("referenceCode", contactUserDetail.getReferenceCode());
 					obj.put("object", obj1);
 
 					EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
@@ -169,7 +171,7 @@ public class LoginService {
 		try {
 			if (!contactNo.equals("")) {
 				fbUserDetail = userDetailDao.loadUserDetail(facebookId, LoginType.BY_FACEBOOK);
-				String otp = GenerateOTP.generateOTP();
+				String otp = GenerateTokenUtil.generateOTP();
 				if (fbUserDetail.getStatusCode().equals("1")) {
 					// new User
 					UserDetail userDetail = new UserDetail();
@@ -187,6 +189,7 @@ public class LoginService {
 					obj.put("statusCode", "success");
 					obj.put("message", "Existing User");
 					obj.put("userId", fbUserDetail.getId());
+					obj.put("referenceCode", fbUserDetail.getReferenceCode());
 					obj.put("otp", otp);
 				}
 
@@ -229,7 +232,7 @@ public class LoginService {
 			logger.info("********************************************");
 			contactUserDetail = userDetailDao.loadUserDetail(contactNo, LoginType.BY_CONTACTNO);
 			if (!contactUserDetail.getContactNo().equals("")) {
-				String otp = GenerateOTP.generateOTP();
+				String otp = GenerateTokenUtil.generateOTP();
 				String email = contactUserDetail.getEmailId();
 
 				EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
