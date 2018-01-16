@@ -16,8 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "transaction", catalog = "orobind")
+//@Entity
+//@Table(name = "transaction", catalog = "orobind")
 public class Transaction implements java.io.Serializable{
 
 	/**
