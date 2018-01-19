@@ -13,12 +13,14 @@ import com.app.domain.EmailOTPTracking;
 import com.app.domain.LoginType;
 import com.app.domain.UserDetail;
 import com.app.mail.SendMail;
+import com.app.util.ApplicationConstant;
 import com.app.util.GenerateTokenUtil;
 import com.app.util.RestResponse;
 
 public class LoginService {
 
-	private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(LoginService.class);
 	private SendMail sendMail = new SendMail();
 	private UserDetailDao userDetailDao = new UserDetailDao();
 
@@ -26,7 +28,8 @@ public class LoginService {
 		try {
 			String subject = "Welcome to Test Cycle Service";
 			logger.info("This is for testing purpose. Message will enhance once deployed on public ip. OTP \t");
-			sendMail.transferToMailServer("**-alok2014mca@gmail.com", subject, "Testing");
+			sendMail.transferToMailServer("**-alok2014mca@gmail.com", subject,
+					"Testing");
 		} catch (Exception e) {
 			logger.error("===================**************=================");
 			logger.error(e.toString());
@@ -48,44 +51,39 @@ public class LoginService {
 		UserDetail contactUserDetail = new UserDetail();
 		try {
 			if (!contactNo.equals("")) {
-				contactUserDetail = userDetailDao.loadUserDetail(contactNo, LoginType.BY_CONTACTNO);
+				contactUserDetail = userDetailDao.loadUserDetail(contactNo,
+						LoginType.BY_CONTACTNO);
 				String otp = GenerateTokenUtil.generateOTP();
 				EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
 				emailOTPTracking.setEmailId(email);
 				emailOTPTracking.setSentOTP(otp);
-				emailOTPTracking.setIsValidated("0");
+				emailOTPTracking.setIsValidated(false);
 				userDetailDao.saveEmailOTP(emailOTPTracking);
 
-				String subject = "Welcome to Test Cycle Service";
-				String emailMessage = "This is for testing purpose. Message will enhance once deployed on public ip. OTP \t"
-						+ otp;
+				String subject = ApplicationConstant.emailSubject;
+				String emailMessage = ApplicationConstant.emailMessage + otp;
 				sendMail.transferToMailServer(email, subject, emailMessage);
 
-				JSONObject obj1 = new JSONObject();
 				if (contactUserDetail.getStatusCode().equals("1")) {
 					// New User
 					UserDetail userDetail = new UserDetail();
 					userDetail.setContactNo(contactNo);
 					userDetail.setEmailId(email);
-					long userId = userDetailDao.saveUserDetail(userDetail);
-					obj.put("status", "Success");
+					UserDetail user = userDetailDao.saveUserDetail(userDetail);
 					obj.put("message", "Registration Successful");
-
-					obj1.put("otp", otp);
-					obj1.put("email", contactUserDetail.getEmailId());
-					obj1.put("mobileNo", contactUserDetail.getContactNo());
-					obj1.put("userId", userId);
-					obj.put("object", obj1);
+					obj.put("email", user.getEmailId());
+					obj.put("mobileNo", user.getContactNo());
+					obj.put("userId", user.getId());
+					obj.put("referenceCode", user.getReferenceCode());
 				} else {
 					// old User
-					obj.put("status", "Success");
 					obj.put("message", "Existing User");
-					obj1.put("otp", otp);
-					obj1.put("email", contactUserDetail.getEmailId());
-					obj1.put("mobileNo", contactUserDetail.getContactNo());
-					obj1.put("userId", contactUserDetail.getId());
-					obj.put("referenceCode", contactUserDetail.getReferenceCode());
-					obj.put("object", obj1);
+					obj.put("otp", otp);
+					obj.put("email", contactUserDetail.getEmailId());
+					obj.put("mobileNo", contactUserDetail.getContactNo());
+					obj.put("userId", contactUserDetail.getId());
+					obj.put("referenceCode",
+							contactUserDetail.getReferenceCode());
 				}
 			} else {
 				obj.put("message", "Contact No is mandatory");
@@ -111,66 +109,68 @@ public class LoginService {
 	}
 
 	public Response loginUser(String contactNo) {
-		JSONObject obj = new JSONObject();
+		JSONObject obj1 = new JSONObject();
 		UserDetail contactUserDetail = new UserDetail();
 		try {
 			if (!contactNo.equals("")) {
-				contactUserDetail = userDetailDao.loadUserDetail(contactNo, LoginType.BY_CONTACTNO);
+				contactUserDetail = userDetailDao.loadUserDetail(contactNo,
+						LoginType.BY_CONTACTNO);
 
 				if (contactUserDetail.getStatusCode().equals("0")) {
 					// old User
-					obj.put("status", "Success");
-					obj.put("message", "Login Successfully");
-					JSONObject obj1 = new JSONObject();
 					String email = contactUserDetail.getEmailId();
 					String otp = GenerateTokenUtil.generateOTP();
+					obj1.put("message", "Login Successfully");
 					obj1.put("otp", otp);
 					obj1.put("email", contactUserDetail.getEmailId());
 					obj1.put("userId", contactUserDetail.getId());
 					obj1.put("mobileNo", contactUserDetail.getContactNo());
-					obj.put("referenceCode", contactUserDetail.getReferenceCode());
-					obj.put("object", obj1);
-
+					obj1.put("referenceCode",
+							contactUserDetail.getReferenceCode());
+					// Todo
+					
 					EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
 					emailOTPTracking.setEmailId(email);
 					emailOTPTracking.setSentOTP(otp);
-					emailOTPTracking.setIsValidated("0");
+					emailOTPTracking.setIsValidated(false);
 					userDetailDao.saveEmailOTP(emailOTPTracking);
 
-					String subject = "Welcome to Test Cycle Service";
-					String emailMessage = "This is for testing purpose. Message will enhance once deployed on public ip. OTP \t"
-							+ otp;
+					String subject = ApplicationConstant.emailSubject;
+					String emailMessage = ApplicationConstant.emailMessage + otp;
 					sendMail.transferToMailServer(email, subject, emailMessage);
 
 				} else {
-					obj.put("message", "Not Registered User");
+					obj1.put("message", "Not Registered User");
 				}
 			} else {
-				obj.put("message", "Contact No is Mandatory");
+				obj1.put("message", "Contact No is Mandatory");
 			}
 
 		} catch (Exception e) {
 			try {
-				obj.put("message", "Something went wrong. Contact Administrator");
+				obj1.put("message",
+						"Something went wrong. Contact Administrator");
 			} catch (JSONException e1) {
 				e1.printStackTrace();
 			}
 			logger.error("===================**************=================");
 			logger.error(e.toString());
 			logger.error("===================**************=================");
-			return RestResponse.withErrorAndData(obj);
+			return RestResponse.withErrorAndData(obj1);
 		} finally {
 			HibernateSessionFactory.closeSession();
 		}
-		return RestResponse.withSuccessAndData(obj);
+		return RestResponse.withSuccessAndData(obj1);
 	}
 
-	public Response loginUserWithFB(String email, String facebookId, String userName, String contactNo) {
+	public Response loginUserWithFB(String email, String facebookId,
+			String userName, String contactNo) {
 		JSONObject obj = new JSONObject();
 		UserDetail fbUserDetail = new UserDetail();
 		try {
 			if (!contactNo.equals("")) {
-				fbUserDetail = userDetailDao.loadUserDetail(facebookId, LoginType.BY_FACEBOOK);
+				fbUserDetail = userDetailDao.loadUserDetail(facebookId,
+						LoginType.BY_FACEBOOK);
 				String otp = GenerateTokenUtil.generateOTP();
 				if (fbUserDetail.getStatusCode().equals("1")) {
 					// new User
@@ -179,15 +179,14 @@ public class LoginService {
 					userDetail.setEmailId(email);
 					userDetail.setFacebookId(facebookId);
 					userDetail.setUserName(userName);
-					long userId = userDetailDao.saveUserDetail(userDetail);
-					obj.put("status", "success");
-					obj.put("message", "New User created");
-					obj.put("userId", userId);
+					UserDetail user = userDetailDao.saveUserDetail(userDetail);
+					obj.put("type", "New User created");
+					obj.put("userId", user.getId());
+					obj.put("referenceCode", user.getReferenceCode());
 					obj.put("otp", otp);
 				} else {
 					// old User
-					obj.put("statusCode", "success");
-					obj.put("message", "Existing User");
+					obj.put("type", "Existing User");
 					obj.put("userId", fbUserDetail.getId());
 					obj.put("referenceCode", fbUserDetail.getReferenceCode());
 					obj.put("otp", otp);
@@ -196,12 +195,11 @@ public class LoginService {
 				EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
 				emailOTPTracking.setEmailId(email);
 				emailOTPTracking.setSentOTP(otp);
-				emailOTPTracking.setIsValidated("0");
+				emailOTPTracking.setIsValidated(false);
 				userDetailDao.saveEmailOTP(emailOTPTracking);
 
-				String subject = "Welcome to Test Cycle Service";
-				String emailMessage = "This is for testing purpose. Message will enhance once deployed on public ip. Validate OTP \t"
-						+ otp;
+				String subject = ApplicationConstant.emailSubject;
+				String emailMessage = ApplicationConstant.emailMessage + otp;
 				sendMail.transferToMailServer(email, subject, emailMessage);
 			} else {
 				obj.put("message", "Contact No. can not be empty");
@@ -228,9 +226,11 @@ public class LoginService {
 		UserDetail contactUserDetail = new UserDetail();
 		try {
 			logger.info("********************************************");
-			logger.info("################ OTP resend with contactNo " + contactNo + " ########################");
+			logger.info("################ OTP resend with contactNo "
+					+ contactNo + " ########################");
 			logger.info("********************************************");
-			contactUserDetail = userDetailDao.loadUserDetail(contactNo, LoginType.BY_CONTACTNO);
+			contactUserDetail = userDetailDao.loadUserDetail(contactNo,
+					LoginType.BY_CONTACTNO);
 			if (!contactUserDetail.getContactNo().equals("")) {
 				String otp = GenerateTokenUtil.generateOTP();
 				String email = contactUserDetail.getEmailId();
@@ -238,29 +238,22 @@ public class LoginService {
 				EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
 				emailOTPTracking.setEmailId(email);
 				emailOTPTracking.setSentOTP(otp);
-				emailOTPTracking.setIsValidated("0");
+				emailOTPTracking.setIsValidated(false);
 				userDetailDao.saveEmailOTP(emailOTPTracking);
-
-				String subject = "Welcome to Test Cycle Service";
-				String emailMessage = "This is for testing purpose. Message will enhance once deployed on public ip. Validate OTP \t"
-						+ otp;
+				
+				String subject = ApplicationConstant.emailSubject;
+				String emailMessage = ApplicationConstant.emailMessage + otp;
 				sendMail.transferToMailServer(email, subject, emailMessage);
-
 				obj.put("message", "OTP has sent to user successfully!");
-
-				// JSONObject obj1 = new JSONObject();
-				// obj1.put("otp", otp);
-				// obj1.put("email", contactUserDetail.getEmailId());
-				// obj1.put("mobileNo", contactUserDetail.getContactNo());
-				// obj.put("object", obj1);
-
+				
 			} else {
 				obj.put("message", "");
 			}
 
 		} catch (Exception e) {
 			try {
-				obj.put("message", "Something went wrong. Contact Administrator");
+				obj.put("message",
+						"Something went wrong. Contact Administrator");
 			} catch (JSONException e1) {
 				e1.printStackTrace();
 			}
@@ -280,11 +273,13 @@ public class LoginService {
 		JSONObject obj = new JSONObject();
 		try {
 			logger.info("********************************************");
-			logger.info("################ OTP validation with email " + email + " ########################");
+			logger.info("################ OTP validation with email " + email
+					+ " ########################");
 			logger.info("********************************************");
 
 			int result = UserDetailDao.validateOTP(email, otpString);
-			UserDetail contactUserDetail = userDetailDao.loadUserDetail(email, LoginType.BY_EMAIL);
+			UserDetail contactUserDetail = userDetailDao.loadUserDetail(email,
+					LoginType.BY_EMAIL);
 			if (result == 1) {
 				obj.put("message", "OTP Matched");
 				obj.put("email", contactUserDetail.getEmailId());
@@ -296,7 +291,8 @@ public class LoginService {
 
 		} catch (Exception e) {
 			try {
-				obj.put("message", "Something went wrong. Contact Administrator");
+				obj.put("message",
+						"Something went wrong. Contact Administrator");
 			} catch (JSONException e1) {
 				e1.printStackTrace();
 			}

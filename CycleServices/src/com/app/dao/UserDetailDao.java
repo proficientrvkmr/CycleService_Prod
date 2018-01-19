@@ -16,16 +16,17 @@ import com.app.util.GenerateTokenUtil;
 public class UserDetailDao {
 	private static final Logger logger = LoggerFactory.getLogger(UserDetailDao.class);
 
-	public long saveUserDetail(UserDetail userDetail) {
-		long result = 0;
-		if(userDetail.getReferenceCode().isEmpty()){
+	public UserDetail saveUserDetail(UserDetail userDetail) {
+		long id = 0;
+		if(userDetail.getReferenceCode() == null){
 			String referCode = GenerateTokenUtil.generateReferCode(7);
 			userDetail.setReferenceCode(referCode);
 		}
 		Session session = HibernateSessionFactory.currentSession();
-		result = (Long) session.save(userDetail);
+		id = (Long) session.save(userDetail);
 		session.beginTransaction().commit();
-		return result;
+		userDetail.setId(id);
+		return userDetail;
 	}
 
 	public UserDetail loadUserDetail(String inputValue, LoginType loginType) {
@@ -105,7 +106,7 @@ public class UserDetailDao {
 			List<?> otpList = query.list();
 			if (otpList.size() > 0) {
 				EmailOTPTracking emailOTPTracking = (EmailOTPTracking) otpList.get(0);
-				emailOTPTracking.setIsValidated("1");
+				emailOTPTracking.setIsValidated(true);
 				if (emailOTPTracking.getSentOTP().equals(otpString)) {
 					result = 1;
 					session.update(emailOTPTracking);
