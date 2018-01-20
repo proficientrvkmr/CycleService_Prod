@@ -3,9 +3,12 @@ package com.app.domain;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -15,7 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
  *
  */
 @Entity
-public class EmailOTPTracking implements Serializable {
+public class OTPTracking implements Serializable {
 
 	/**
 	 * 
@@ -27,9 +30,14 @@ public class EmailOTPTracking implements Serializable {
 	@GeneratedValue(generator = "gen")
 	private long id;
 	private String emailId;
+	private String mobileNo;
 	private String sentOTP;
 	private Date creationDate;
+	private Date validateDate;
 	private boolean isValidated;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "userId", nullable = false)
+	private UserDetail user;	
 
 	public long getId() {
 		return id;
@@ -70,4 +78,29 @@ public class EmailOTPTracking implements Serializable {
 	public void setIsValidated(boolean isValidated) {
 		this.isValidated = isValidated;
 	}
+
+	public String getMobileNo() {
+		return mobileNo;
+	}
+
+	public void setMobileNo(String mobileNo) {
+		this.mobileNo = mobileNo;
+	}
+
+	public Date getValidateDate() {
+		return validateDate;
+	}
+
+	public void setValidateDate(Date validateDate) {
+		this.validateDate = validateDate;
+	}
+
+	public UserDetail getUser() {
+		return user;
+	}
+
+	public void setUser(UserDetail user) {
+		this.user = user;
+	}
+	
 }

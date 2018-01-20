@@ -1,5 +1,7 @@
 package com.app.service;
 
+import java.util.Date;
+
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONException;
@@ -9,10 +11,12 @@ import org.slf4j.LoggerFactory;
 
 import com.app.config.hibernate.HibernateSessionFactory;
 import com.app.dao.UserDetailDao;
-import com.app.domain.EmailOTPTracking;
+import com.app.domain.OTPTracking;
 import com.app.domain.LoginType;
 import com.app.domain.UserDetail;
 import com.app.mail.SendMail;
+import com.app.sms.ISmsExotelSender;
+import com.app.sms.SmsExotelSenderImpl;
 import com.app.util.ApplicationConstant;
 import com.app.util.GenerateTokenUtil;
 import com.app.util.RestResponse;
@@ -23,6 +27,7 @@ public class LoginService {
 			.getLogger(LoginService.class);
 	private SendMail sendMail = new SendMail();
 	private UserDetailDao userDetailDao = new UserDetailDao();
+	private ISmsExotelSender sendSms = new SmsExotelSenderImpl();
 
 	public Response testMail() {
 		try {
@@ -54,21 +59,38 @@ public class LoginService {
 				contactUserDetail = userDetailDao.loadUserDetail(contactNo,
 						LoginType.BY_CONTACTNO);
 				String otp = GenerateTokenUtil.generateOTP();
-				EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
-				emailOTPTracking.setEmailId(email);
+				OTPTracking emailOTPTracking = new OTPTracking();
+				emailOTPTracking.setEmailId(contactUserDetail.getEmailId());
+				emailOTPTracking.setMobileNo(contactUserDetail.getContactNo());
 				emailOTPTracking.setSentOTP(otp);
 				emailOTPTracking.setIsValidated(false);
-				userDetailDao.saveEmailOTP(emailOTPTracking);
-
-				String subject = ApplicationConstant.emailSubject;
-				String emailMessage = ApplicationConstant.emailMessage + otp;
-				sendMail.transferToMailServer(email, subject, emailMessage);
-
+				emailOTPTracking.setCreationDate(new Date());
+				emailOTPTracking.setUser(contactUserDetail);
+				
+				try {
+					userDetailDao.saveEmailOTP(emailOTPTracking);
+					//sms
+					String to = contactNo;
+					String body = ApplicationConstant.smsMessageBody;
+					String smsText = String.format(body, otp);
+					sendSms.sendSms(to, smsText);
+					//email
+					String subject = ApplicationConstant.emailSubject;
+					String emailMessage = ApplicationConstant.emailMessage
+							+ otp;
+					sendMail.transferToMailServer(email, subject, emailMessage);
+				} catch (Exception e) {
+					logger.error("===================**************=================");
+					logger.error(e.toString());
+					logger.error("===================**************=================");
+				}
 				if (contactUserDetail.getStatusCode().equals("1")) {
 					// New User
 					UserDetail userDetail = new UserDetail();
 					userDetail.setContactNo(contactNo);
 					userDetail.setEmailId(email);
+					userDetail.setActive(false);
+					userDetail.setCreatedDate(new Date());
 					UserDetail user = userDetailDao.saveUserDetail(userDetail);
 					obj.put("message", "Registration Successful");
 					obj.put("email", user.getEmailId());
@@ -127,17 +149,32 @@ public class LoginService {
 					obj1.put("mobileNo", contactUserDetail.getContactNo());
 					obj1.put("referenceCode",
 							contactUserDetail.getReferenceCode());
-					// Todo
 					
-					EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
-					emailOTPTracking.setEmailId(email);
+					OTPTracking emailOTPTracking = new OTPTracking();
+					emailOTPTracking.setEmailId(contactUserDetail.getEmailId());
+					emailOTPTracking.setMobileNo(contactUserDetail.getContactNo());
 					emailOTPTracking.setSentOTP(otp);
 					emailOTPTracking.setIsValidated(false);
-					userDetailDao.saveEmailOTP(emailOTPTracking);
-
-					String subject = ApplicationConstant.emailSubject;
-					String emailMessage = ApplicationConstant.emailMessage + otp;
-					sendMail.transferToMailServer(email, subject, emailMessage);
+					emailOTPTracking.setCreationDate(new Date());
+					emailOTPTracking.setUser(contactUserDetail);
+					
+					try {
+						userDetailDao.saveEmailOTP(emailOTPTracking);
+						//sms
+						String to = contactNo;
+						String body = ApplicationConstant.smsMessageBody;
+						String smsText = String.format(body, otp);
+						sendSms.sendSms(to, smsText);
+						//email
+						String subject = ApplicationConstant.emailSubject;
+						String emailMessage = ApplicationConstant.emailMessage
+								+ otp;
+						sendMail.transferToMailServer(email, subject, emailMessage);
+					} catch (Exception e) {
+						logger.error("===================**************=================");
+						logger.error(e.toString());
+						logger.error("===================**************=================");
+					}
 
 				} else {
 					obj1.put("message", "Not Registered User");
@@ -166,41 +203,61 @@ public class LoginService {
 	public Response loginUserWithFB(String email, String facebookId,
 			String userName, String contactNo) {
 		JSONObject obj = new JSONObject();
-		UserDetail fbUserDetail = new UserDetail();
+		UserDetail userDetail = new UserDetail();
 		try {
 			if (!contactNo.equals("")) {
-				fbUserDetail = userDetailDao.loadUserDetail(facebookId,
+				userDetail = userDetailDao.loadUserDetail(facebookId,
 						LoginType.BY_FACEBOOK);
 				String otp = GenerateTokenUtil.generateOTP();
-				if (fbUserDetail.getStatusCode().equals("1")) {
+				if (userDetail.getStatusCode().equals("1")) {
 					// new User
-					UserDetail userDetail = new UserDetail();
-					userDetail.setContactNo(contactNo);
-					userDetail.setEmailId(email);
-					userDetail.setFacebookId(facebookId);
-					userDetail.setUserName(userName);
-					UserDetail user = userDetailDao.saveUserDetail(userDetail);
+					UserDetail newUser = new UserDetail();
+					newUser.setContactNo(contactNo);
+					newUser.setEmailId(email);
+					newUser.setFacebookId(facebookId);
+					newUser.setUserName(userName);
+					newUser.setActive(false);
+					newUser.setCreatedDate(new Date());
+					userDetail = userDetailDao.saveUserDetail(newUser);
+					
 					obj.put("type", "New User created");
-					obj.put("userId", user.getId());
-					obj.put("referenceCode", user.getReferenceCode());
+					obj.put("userId", userDetail.getId());
+					obj.put("referenceCode", userDetail.getReferenceCode());
 					obj.put("otp", otp);
 				} else {
 					// old User
 					obj.put("type", "Existing User");
-					obj.put("userId", fbUserDetail.getId());
-					obj.put("referenceCode", fbUserDetail.getReferenceCode());
+					obj.put("userId", userDetail.getId());
+					obj.put("referenceCode", userDetail.getReferenceCode());
 					obj.put("otp", otp);
 				}
 
-				EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
-				emailOTPTracking.setEmailId(email);
+				OTPTracking emailOTPTracking = new OTPTracking();
+				emailOTPTracking.setEmailId(userDetail.getEmailId());
+				emailOTPTracking.setMobileNo(userDetail.getContactNo());
 				emailOTPTracking.setSentOTP(otp);
 				emailOTPTracking.setIsValidated(false);
-				userDetailDao.saveEmailOTP(emailOTPTracking);
-
-				String subject = ApplicationConstant.emailSubject;
-				String emailMessage = ApplicationConstant.emailMessage + otp;
-				sendMail.transferToMailServer(email, subject, emailMessage);
+				emailOTPTracking.setCreationDate(new Date());
+				emailOTPTracking.setUser(userDetail);
+				
+				try {
+					userDetailDao.saveEmailOTP(emailOTPTracking);
+					//sms
+					String to = contactNo;
+					String body = ApplicationConstant.smsMessageBody;
+					String smsText = String.format(body, otp);
+					sendSms.sendSms(to, smsText);
+					//email
+					String subject = ApplicationConstant.emailSubject;
+					String emailMessage = ApplicationConstant.emailMessage
+							+ otp;
+					sendMail.transferToMailServer(email, subject, emailMessage);
+				} catch (Exception e) {
+					logger.error("===================**************=================");
+					logger.error(e.toString());
+					logger.error("===================**************=================");
+				}
+				
 			} else {
 				obj.put("message", "Contact No. can not be empty");
 			}
@@ -234,18 +291,34 @@ public class LoginService {
 			if (!contactUserDetail.getContactNo().equals("")) {
 				String otp = GenerateTokenUtil.generateOTP();
 				String email = contactUserDetail.getEmailId();
-
-				EmailOTPTracking emailOTPTracking = new EmailOTPTracking();
-				emailOTPTracking.setEmailId(email);
+				
+				OTPTracking emailOTPTracking = new OTPTracking();
+				emailOTPTracking.setEmailId(contactUserDetail.getEmailId());
+				emailOTPTracking.setMobileNo(contactUserDetail.getContactNo());
 				emailOTPTracking.setSentOTP(otp);
 				emailOTPTracking.setIsValidated(false);
-				userDetailDao.saveEmailOTP(emailOTPTracking);
+				emailOTPTracking.setCreationDate(new Date());
+				emailOTPTracking.setUser(contactUserDetail);
 				
-				String subject = ApplicationConstant.emailSubject;
-				String emailMessage = ApplicationConstant.emailMessage + otp;
-				sendMail.transferToMailServer(email, subject, emailMessage);
+				try {
+					userDetailDao.saveEmailOTP(emailOTPTracking);
+					//sms
+					String to = contactNo;
+					String body = ApplicationConstant.smsMessageBody;
+					String smsText = String.format(body, otp);
+					sendSms.sendSms(to, smsText);
+					//email
+					String subject = ApplicationConstant.emailSubject;
+					String emailMessage = ApplicationConstant.emailMessage
+							+ otp;
+					sendMail.transferToMailServer(email, subject, emailMessage);
+				} catch (Exception e) {
+					logger.error("===================**************=================");
+					logger.error(e.toString());
+					logger.error("===================**************=================");
+				}
+				
 				obj.put("message", "OTP has sent to user successfully!");
-				
 			} else {
 				obj.put("message", "");
 			}
@@ -286,7 +359,7 @@ public class LoginService {
 				obj.put("userId", contactUserDetail.getId());
 				obj.put("mobileNo", contactUserDetail.getContactNo());
 			} else {
-				obj.put("message", "This is not one which we sent");
+				obj.put("message", "This is not one which we had sent");
 			}
 
 		} catch (Exception e) {
@@ -304,7 +377,6 @@ public class LoginService {
 		} finally {
 			HibernateSessionFactory.closeSession();
 		}
-
 		return RestResponse.withSuccessAndData(obj);
 	}
 

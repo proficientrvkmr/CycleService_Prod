@@ -1,6 +1,7 @@
 package com.app.domain;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,8 +26,8 @@ public class UserDetail implements Serializable {
 	private String emailId;
 	private String contactNo;
 	private boolean isActive;
-	private String createdDate;
-	private String modifiedDate;
+	private Date createdDate;
+	private Date modifiedDate;
 	private String facebookId;
 	@Transient
 	private String statusCode;
@@ -80,19 +81,19 @@ public class UserDetail implements Serializable {
 		this.isActive = isActive;
 	}
 
-	public String getCreatedDate() {
+	public Date getCreatedDate() {
 		return createdDate;
 	}
 
-	public void setCreatedDate(String createdDate) {
+	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
 
-	public String getModifiedDate() {
+	public Date getModifiedDate() {
 		return modifiedDate;
 	}
 
-	public void setModifiedDate(String modifiedDate) {
+	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
 	}
 

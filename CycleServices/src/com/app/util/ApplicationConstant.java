@@ -13,4 +13,5 @@ public interface ApplicationConstant {
 	double rideTimeRATE = 1;
 	String emailSubject = "Welcome to Test Cycle Service";
 	String emailMessage = "This is for testing purpose. Message will enhance once deployed on public ip. OTP \t";
+	String smsMessageBody = "OTP is %s for MyFit Account activation. This OTP is valid for 15 minutes.";
 }

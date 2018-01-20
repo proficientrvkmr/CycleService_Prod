@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONException;
@@ -32,7 +33,8 @@ public class LockController {
 		Response response = null;
 		try {
 			Object lockDetail = object.get("lockDetail");
-			lock = (LockDetail) JSONConverterUtil.fromJson(lockDetail, LockDetail.class);
+			lock = (LockDetail) JSONConverterUtil.fromJson(lockDetail,
+					LockDetail.class);
 			response = lockService.lockRegister(lock);
 		} catch (IOException | JSONException e) {
 			e.printStackTrace();
@@ -41,12 +43,20 @@ public class LockController {
 		return response;
 	}
 
+	// @POST
+	// @Path("/verify")
+	// @Produces("application/json;charset=UTF-8")
+	// public Response verify(JSONObject object) throws JSONException {
+	// long userId = object.getLong("userId");
+	// String lockSecretCode = object.get("lockCode").toString();
+	// return lockService.lockRegister(lockSecretCode, userId);
+	// }
+
 	@POST
 	@Path("/verify")
 	@Produces("application/json;charset=UTF-8")
-	public Response verify(JSONObject object) throws JSONException {
-		long userId = object.getLong("userId");
-		String lockSecretCode = object.get("lockCode").toString();
+	public Response verify(@QueryParam("userId") long userId,
+			@QueryParam("lockCode") String lockSecretCode) throws JSONException {
 		return lockService.lockRegister(lockSecretCode, userId);
 	}
 }

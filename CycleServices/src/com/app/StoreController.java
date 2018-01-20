@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONException;
@@ -42,22 +43,32 @@ public class StoreController {
 		return response;
 	}
 
+//	@POST
+//	@Path("/findAllStoresNearestByMe")
+//	@Produces("application/json;charset=UTF-8")
+//	public Response findAllNearestByMe(JSONObject object) throws JSONException {
+//		double latitude = object.getDouble("latitude");
+//		double longitude = object.getDouble("longitude");
+//		long radius = object.getLong("radius");
+//		long userId = object.getLong("userId");
+//		return storeService.findAllNearestByMe(longitude, latitude, radius, userId);
+//	}
+	
 	@POST
 	@Path("/findAllStoresNearestByMe")
 	@Produces("application/json;charset=UTF-8")
-	public Response findAllNearestByMe(JSONObject object) throws JSONException {
-		double latitude = object.getDouble("latitude");
-		double longitude = object.getDouble("longitude");
-		long radius = object.getLong("radius");
-		long userId = object.getLong("userId");
-		return storeService.findAllNearestByMe(longitude, latitude, radius, userId);
+	public Response findAllNearestByMe(@QueryParam("latitude") double latitude,
+			@QueryParam("longitude") double longitude,
+			@QueryParam("radius") long radius, @QueryParam("userId") long userId)
+			throws JSONException {
+		return storeService.findAllNearestByMe(longitude, latitude, radius,
+				userId);
 	}
 
 	@POST
 	@Path("/findAllStores")
 	@Produces("application/json;charset=UTF-8")
-	public Response getAllStores(JSONObject object) throws JSONException, JsonProcessingException {
-		// String userId = object.getString("userId");
+	public Response getAllStores() throws JSONException, JsonProcessingException {
 		return storeService.getAllStores();
 	}
 

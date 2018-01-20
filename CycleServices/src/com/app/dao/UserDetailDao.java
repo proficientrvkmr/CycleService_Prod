@@ -1,5 +1,6 @@
 package com.app.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -8,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.app.config.hibernate.HibernateSessionFactory;
-import com.app.domain.EmailOTPTracking;
 import com.app.domain.LoginType;
+import com.app.domain.OTPTracking;
 import com.app.domain.UserDetail;
 import com.app.util.GenerateTokenUtil;
 
@@ -80,7 +81,7 @@ public class UserDetailDao {
 		return userDetail;
 	}
 
-	public long saveEmailOTP(EmailOTPTracking emailOTPTracking) {
+	public long saveEmailOTP(OTPTracking emailOTPTracking) {
 		long result = 0;
 		try {
 			Session session = HibernateSessionFactory.currentSession();
@@ -100,17 +101,18 @@ public class UserDetailDao {
 		int result = 0;
 		try {
 			Session session = HibernateSessionFactory.currentSession();
-			String queryString = "from EmailOTPTracking where isValidated=0 and id=(select max(id) from EmailOTPTracking where emailId=:email)";
+			String queryString = "from OTPTracking where isValidated = false and id=(select max(id) from OTPTracking where emailId=:email)";
 			Query query = session.createQuery(queryString);
 			query.setString("email", contactNo);
 			List<?> otpList = query.list();
 			if (otpList.size() > 0) {
-				EmailOTPTracking emailOTPTracking = (EmailOTPTracking) otpList.get(0);
+				OTPTracking emailOTPTracking = (OTPTracking) otpList.get(0);
 				emailOTPTracking.setIsValidated(true);
+				emailOTPTracking.setValidateDate(new Date());
 				if (emailOTPTracking.getSentOTP().equals(otpString)) {
-					result = 1;
 					session.update(emailOTPTracking);
 					session.beginTransaction().commit();
+					result = 1;
 				}
 			}
 		} catch (Exception e) {
